@@ -21,6 +21,10 @@ else:
     # Otherwise, print the eligible vaccines
     st.write("You are eligible for the following vaccines:")
     vaccine_options = [f"{k}: {v['name']}" for k, v in eligible_vaccines.items()]
+    for i, option in enumerate(vaccine_options, start=1):
+        st.write(f"{i}. {option}")
+
+    # Ask the user which vaccines they have already taken
     vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
 
     # For each vaccine the user has taken, check if they need any more doses
