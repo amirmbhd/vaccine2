@@ -12,35 +12,36 @@ vaccines = {
     "Influenza": {"ages": range(6, 200), "doses": 1, "name": "Influenza"}
 }
 
-# Ask the user for their age
-age = st.number_input("Please enter your age in months:", min_value=0, value=0)
+# Add a button to start the application
+if st.button('Start'):
+    # Ask the user for their age
+    age = st.number_input("Please enter your age in months:", min_value=0, value=0)
 
-# Determine which vaccines the user is eligible for
-eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
+    # Determine which vaccines the user is eligible for
+    eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
-# If the user is not eligible for any vaccines, print a message and exit
-if not eligible_vaccines:
-    st.write("You are not currently eligible for any vaccines.")
-else:
-    # Otherwise, print the eligible vaccines
-    st.write("You are eligible for the following vaccines:")
-    vaccine_options = [f"{k}: {v['name']}" for k, v in eligible_vaccines.items()]
-    for i, option in enumerate(vaccine_options, start=1):
-        st.write(f"{i}. {option}")
+    # If the user is not eligible for any vaccines, print a message and exit
+    if not eligible_vaccines:
+        st.write("You are not currently eligible for any vaccines.")
+    else:
+        # Otherwise, print the eligible vaccines
+        st.write("You are eligible for the following vaccines:")
+        vaccine_options = [f"{k}: {v['name']}" for k, v in eligible_vaccines.items()]
+        for i, option in enumerate(vaccine_options, start=1):
+            st.write(f"{i}. {option}")
 
-    # Ask the user which vaccines they have already taken
-    vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
+        # Ask the user which vaccines they have already taken
+        vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
 
-    # For each vaccine the user has taken, check if they need any more doses
-    for vaccine in vaccine_selection:
-        vaccine_key = vaccine.split(":")[0].strip()
-        doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
-        if doses_taken < eligible_vaccines[vaccine_key]["doses"]:
-            st.write(f"You need {eligible_vaccines[vaccine_key]['doses'] - doses_taken} more doses of {vaccine_key}.")
-        else:
-            st.write(f"You have completed the required doses for {vaccine_key}.")
+        # For each vaccine the user has taken, check if they need any more doses
+        for vaccine in vaccine_selection:
+            vaccine_key = vaccine.split(":")[0].strip()
+            doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
+            if doses_taken < eligible_vaccines[vaccine_key]["doses"]:
+                st.write(f"You need {eligible_vaccines[vaccine_key]['doses'] - doses_taken} more doses of {vaccine_key}.")
+            else:
+                st.write(f"You have completed the required doses for {vaccine_key}.")
 
-# Add a button to restart the application
-if st.button('Restart'):
-    age = 0
-    st.experimental_rerun()
+    # Add a button to restart the application
+    if st.button('Restart'):
+        st.experimental_rerun()
