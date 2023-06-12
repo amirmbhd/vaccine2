@@ -1,5 +1,9 @@
 import streamlit as st
 
+# Welcome message and program description
+st.title("Vaccine Recommendation Program")
+st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
+
 # Define the vaccines and their information
 vaccines = {
     "Hib": {"ages": range(2, 16), "doses": 3, "name": "Haemophilus influenzae type b"},
@@ -38,4 +42,5 @@ else:
 
 # Add a button to restart the application
 if st.button('Restart'):
+    age = 0
     st.experimental_rerun()
