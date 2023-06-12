@@ -1,9 +1,5 @@
 import streamlit as st
 
-# Welcome message and program description
-st.title("Vaccine Recommendation Program")
-st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
-
 # Define the vaccines and their information
 vaccines = {
     "Hib": {"ages": range(2, 16), "doses": 3, "name": "Haemophilus influenzae type b"},
@@ -12,8 +8,22 @@ vaccines = {
     "Influenza": {"ages": range(6, 200), "doses": 1, "name": "Influenza"}
 }
 
-# Add a button to start the application
-if st.button('Start'):
+# Define the possible states of the application
+STATE_WELCOME = "welcome"
+STATE_PROGRAM = "program"
+
+# Initialize the state
+state = st.session_state.get("state", STATE_WELCOME)
+
+# Welcome message and program description
+st.title("Vaccine Recommendation Program")
+st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
+
+# Handle the state transitions
+if state == STATE_WELCOME:
+    if st.button('Start'):
+        state = STATE_PROGRAM
+elif state == STATE_PROGRAM:
     # Ask the user for their age
     age = st.number_input("Please enter your age in months:", min_value=0, value=0)
 
@@ -42,6 +52,9 @@ if st.button('Start'):
             else:
                 st.write(f"You have completed the required doses for {vaccine_key}.")
 
-    # Add a button to restart the application
-    if st.button('Restart'):
-        st.experimental_rerun()
+        # Add a button to restart the application
+        if st.button('Restart'):
+            state = STATE_WELCOME
+
+# Update the state in session state
+st.session_state["state"] = state
