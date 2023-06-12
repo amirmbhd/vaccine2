@@ -5,7 +5,6 @@ Created on Mon Jun 12 18:54:19 2023
 
 @author: amirbhd
 """
-pip install streamlit
 
 import streamlit as st
 
