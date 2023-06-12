@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 12 18:54:19 2023
-
-@author: amirbhd
-"""
-
 import streamlit as st
 
 # Define the vaccines and their information
@@ -29,13 +21,17 @@ else:
     # Otherwise, print the eligible vaccines
     st.write("You are eligible for the following vaccines:")
     vaccine_options = [f"{k}: {v['name']}" for k, v in eligible_vaccines.items()]
-    taken_vaccines = st.multiselect("Please select the vaccines you have already taken:", vaccine_options)
+    vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
 
     # For each vaccine the user has taken, check if they need any more doses
-    for vaccine in taken_vaccines:
-        vaccine_key = vaccine.split(":")[0]
+    for vaccine in vaccine_selection:
+        vaccine_key = vaccine.split(":")[0].strip()
         doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
         if doses_taken < eligible_vaccines[vaccine_key]["doses"]:
             st.write(f"You need {eligible_vaccines[vaccine_key]['doses'] - doses_taken} more doses of {vaccine_key}.")
         else:
             st.write(f"You have completed the required doses for {vaccine_key}.")
+
+# Add a button to restart the application
+if st.button('Restart'):
+    st.experimental_rerun()
