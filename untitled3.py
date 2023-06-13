@@ -25,7 +25,7 @@ if state == STATE_WELCOME:
         state = STATE_PROGRAM
 elif state == STATE_PROGRAM:
     # Ask the user for their age
-    age = st.number_input("Please enter your age in months:", min_value=0, value=0)
+    age = st.number_input("Please enter your age in yers:", min_value=0, value=0)
 
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
