@@ -54,8 +54,7 @@ if start:
         # For each vaccine the user has taken, check if they need any more doses
         for vaccine in vaccine_selection:
             vaccine_key = vaccine.strip()
-            show_completion = st.checkbox(f"Do you want to check if you have completed the series for {vaccine_key}?")
-            if show_completion:
+            if st.checkbox(f"Do you want to check if you have completed the series for {vaccine_key}?"):
                 doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
                 doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
                 if doses_needed > 0:
