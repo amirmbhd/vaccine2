@@ -24,11 +24,10 @@ for _, row in vaccine_df.iterrows():
 months_options = list(range(13))  # 0 to 12
 years_options = list(range(19))  # 0 to 18
 
-# Welcome message and program description
 st.title("Vaccine Recommendation Program")
-st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
 
-# Sidebar for user inputs
+st.markdown("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
+
 st.sidebar.markdown("**Please enter your age:**", unsafe_allow_html=True)
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
@@ -44,34 +43,28 @@ if age > 0:
     if not eligible_vaccines:
         st.write("You are not currently eligible for any vaccines.")
     else:
-        # Otherwise, print the eligible vaccines
         st.markdown("**You are eligible for the following vaccines:**", unsafe_allow_html=True)
         for vaccine, info in eligible_vaccines.items():
             st.write(f"{vaccine}: {info['doses']} doses")
 
-        # Ask the user which vaccines they have already taken
-        st.markdown("**Select the vaccines you have already taken:**", unsafe_allow_html=True)
-        st.markdown("<i>(You can select more than one option. This will display the timeline of the vaccines you need to take and allows you to check if you have completed the series for the vaccines already taken)</i>", unsafe_allow_html=True)
+        st.markdown("**<span style='color:blue'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
+        st.markdown("<i>(You can select more than one. This will display the timeline of the vaccines you need to take and allow you to check if you have completed the series for the vaccines already taken.)</i>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
-        # If user has selected something
         if vaccine_selection:
-            # Display the timeline for each vaccine not taken yet
-            if "None" not in vaccine_selection:
-                st.write("You can see the timeline for the vaccines below:")
-                for vaccine, info in eligible_vaccines.items():
-                    if vaccine not in vaccine_selection:
-                        st.markdown(f"**{vaccine}**", unsafe_allow_html=True)
-                        for dose, time in info["timeline"].items():
-                            st.write(f"{dose}: {time}")
+            st.markdown("**The timeline for the following vaccines is displayed below:**", unsafe_allow_html=True)
+            for vaccine, info in eligible_vaccines.items():
+                if vaccine not in vaccine_selection:
+                    st.markdown(f"**<span style='color:green'>{vaccine}</span>**", unsafe_allow_html=True)
+                    for dose, time in info["timeline"].items():
+                        st.write(f"{dose}: {time}")
 
-            # If user wants to check completion
-            st.markdown("**Would you like to know if you have completed the series for the vaccines already taken?**", unsafe_allow_html=True)
+            st.markdown("**<span style='color:blue'>Would you like to know if you have completed the series for the vaccines already taken?</span>**", unsafe_allow_html=True)
             show_completion = st.radio("", ["Yes", "No"], index=1)
             if show_completion == "Yes":
                 for vaccine in vaccine_selection:
                     if vaccine != "None":
-                        st.markdown(f"**How many doses of {vaccine} have you taken?**", unsafe_allow_html=True)
+                        st.markdown(f"**<span style='color:red'>How many doses of {vaccine} have you taken?</span>**", unsafe_allow_html=True)
                         doses_taken = st.number_input("", min_value=0, value=0, key=f"{vaccine}_doses_taken")
                         if doses_taken > 0:
                             doses_needed = eligible_vaccines[vaccine]["doses"] - doses_taken
