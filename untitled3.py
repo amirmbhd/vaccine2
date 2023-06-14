@@ -29,8 +29,7 @@ st.write("Welcome to the Vaccine Recommendation Program! This program will tell 
 age_month = st.selectbox("Select your age (months):", months_options)
 age_year = st.selectbox("Select your age (years):", years_options)
 
-# Start the program
-if st.button("Start"):
+
     # Calculate the age in months
     age = age_month + age_year * 12
 
@@ -43,18 +42,16 @@ if st.button("Start"):
     else:
         # Otherwise, print the eligible vaccines
         st.write("You are eligible for the following vaccines:")
-        vaccine_options = [f"{k}: {v['doses']} doses" for k, v in eligible_vaccines.items()]
-        for i, option in enumerate(vaccine_options, start=1):
-            st.write(f"{i}. {option}")
+        for vaccine, info in eligible_vaccines.items():
+            st.write(f"{vaccine}: {info['doses']} doses")
 
         # Ask the user which vaccines they have already taken
-        vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
+        vaccine_selection = st.multiselect("Select the vaccines you have already taken:", list(eligible_vaccines.keys()))
 
         # For each vaccine the user has taken, check if they need any more doses
         for vaccine in vaccine_selection:
-            vaccine_key = vaccine.split(":")[0].strip()
-            show_completion = st.checkbox(f"Do you want to check if you have completed the series for {vaccine_key}?")
-            if show_completion:
+            vaccine_key = vaccine.strip()
+            if st.checkbox(f"Do you want to check if you have completed the series for {vaccine_key}?"):
                 doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
                 doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
                 if doses_needed > 0:
