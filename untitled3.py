@@ -52,12 +52,10 @@ else:
     for vaccine in vaccine_selection:
         vaccine_key = vaccine.split(":")[0].strip()
         show_completion = st.checkbox(f"Do you want to check if you have completed the series for {vaccine_key}?")
-        doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
         if show_completion:
+            doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
             doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
             if doses_needed > 0:
                 st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
             else:
                 st.write(f"You have completed the required doses for {vaccine_key}.")
-        else:
-            st.write(f"You have taken {doses_taken} doses of {vaccine_key}.")
