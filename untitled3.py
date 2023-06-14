@@ -43,8 +43,11 @@ if st.button("Start"):
     else:
         # Otherwise, print the eligible vaccines
         st.write("You are eligible for the following vaccines:")
-        vaccine_options = list(eligible_vaccines.keys())
-        vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
+        for vaccine, info in eligible_vaccines.items():
+            st.write(f"{vaccine}: {info['doses']} doses")
+
+        # Ask the user which vaccines they have already taken
+        vaccine_selection = st.multiselect("Select the vaccines you have already taken:", list(eligible_vaccines.keys()))
 
         # For each vaccine the user has taken, check if they need any more doses
         for vaccine in vaccine_selection:
