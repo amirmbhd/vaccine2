@@ -55,14 +55,16 @@ if age > 0:
         st.markdown("<i>(You can select more than one option. This will display the timeline of the vaccines you need to take and allows you to check if you have completed the series for the vaccines already taken)</i>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
-        # Display the timeline for each vaccine not taken yet
-        if "None" not in vaccine_selection:
-            st.write("You can see the timeline for the vaccines below:")
-            for vaccine, info in eligible_vaccines.items():
-                if vaccine not in vaccine_selection:
-                    st.markdown(f"**{vaccine}**", unsafe_allow_html=True)
-                    for dose, time in info["timeline"].items():
-                        st.write(f"{dose}: {time}")
+        # If user has selected something
+        if vaccine_selection:
+            # Display the timeline for each vaccine not taken yet
+            if "None" not in vaccine_selection:
+                st.write("You can see the timeline for the vaccines below:")
+                for vaccine, info in eligible_vaccines.items():
+                    if vaccine not in vaccine_selection:
+                        st.markdown(f"**{vaccine}**", unsafe_allow_html=True)
+                        for dose, time in info["timeline"].items():
+                            st.write(f"{dose}: {time}")
 
             # If user wants to check completion
             st.markdown("**Would you like to know if you have completed the series for the vaccines already taken?**", unsafe_allow_html=True)
