@@ -73,7 +73,7 @@ if age > 0:
                 for vaccine in vaccine_selection:
                     if vaccine != "None":
                         st.markdown(f"**How many doses of {vaccine} have you taken?**", unsafe_allow_html=True)
-                        doses_taken = st.number_input("", min_value=0, value=0)
+                        doses_taken = st.number_input("", min_value=0, value=0, key=f"{vaccine}_doses_taken")
                         if doses_taken > 0:
                             doses_needed = eligible_vaccines[vaccine]["doses"] - doses_taken
                             if doses_needed > 0:
