@@ -53,34 +53,29 @@ if age > 0:
 
         # If user selected at least one option
         if vaccine_selection:
+            # Show timeline for eligible vaccines not taken yet
             if "None" in vaccine_selection:
-                # Print the timeline for all vaccines
-                for vaccine, info in eligible_vaccines.items():
-                    st.write(f"The timeline for {vaccine} is:")
+                vaccine_selection = []
+            st.write("Here is the timeline for the vaccines:")
+            for vaccine, info in eligible_vaccines.items():
+                if vaccine not in vaccine_selection:
+                    st.markdown(f"**{vaccine}**")
                     for dose, time in info["timeline"].items():
                         st.write(f"{dose}: {time}")
-            else:
-                # For each vaccine not selected by the user, print the timeline
-                for vaccine, info in eligible_vaccines.items():
-                    if vaccine not in vaccine_selection:
-                        st.write(f"The timeline for {vaccine} is:")
-                        for dose, time in info["timeline"].items():
-                            st.write(f"{dose}: {time}")
     
-            # For each vaccine the user has taken, check if they need any more doses
-            for vaccine in vaccine_selection:
-                if vaccine != "None":
-                    vaccine_key = vaccine.strip()
-                    default_value = "No"
-                    show_completion_key = f"show_completion_{vaccine_key}"
-                    if show_completion_key not in st.session_state:
-                        st.session_state[show_completion_key] = default_value
-                    show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"], key=show_completion_key)
-                    if show_completion == "Yes":
-                        doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
+            # Ask if user wants to check if they have completed the series for taken vaccines
+            default_value = "No"
+            show_completion_key = "show_completion"
+            if show_completion_key not in st.session_state:
+                st.session_state[show_completion_key] = default_value
+            show_completion = st.radio("Would you like to know if you have completed the series for the vaccines already taken?", ["Yes", "No"], key=show_completion_key)
+            if show_completion == "Yes":
+                for vaccine in vaccine_selection:
+                    if vaccine != "None":
+                        doses_taken = st.number_input(f"How many doses of {vaccine} have you taken?", min_value=0, value=0)
                         if doses_taken > 0:
-                            doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
+                            doses_needed = eligible_vaccines[vaccine]["doses"] - doses_taken
                             if doses_needed > 0:
-                                st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                                st.write(f"You need {doses_needed} more doses of {vaccine}.")
                             else:
-                                st.write(f"You have completed the required doses for {vaccine_key}.")
+                                st.write(f"You have completed the required doses for {vaccine}.")
