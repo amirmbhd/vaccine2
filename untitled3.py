@@ -30,7 +30,9 @@ age_month = st.selectbox("Select your age (months):", months_options)
 age_year = st.selectbox("Select your age (years):", years_options)
 
 # Start the program
-if st.button("Start"):
+start = st.button("Start")
+
+if start:
     # Calculate the age in months
     age = age_month + age_year * 12
 
