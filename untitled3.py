@@ -29,8 +29,10 @@ st.title("Vaccine Recommendation Program")
 st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
 
 # Ask the user for their age
-age_month = st.selectbox("Select your age (months):", months_options)
-age_year = st.selectbox("Select your age (years):", years_options)
+st.markdown("**Select your age (months):**", unsafe_allow_html=True)
+age_month = st.selectbox("", months_options)
+st.markdown("**Select your age (years):**", unsafe_allow_html=True)
+age_year = st.selectbox("", years_options)
 
 # Calculate the age in months
 age = age_month + age_year * 12
@@ -44,7 +46,7 @@ if age > 0:
         st.write("You are not currently eligible for any vaccines.")
     else:
         # Otherwise, print the eligible vaccines
-        st.write("You are eligible for the following vaccines:")
+        st.markdown("**You are eligible for the following vaccines:**", unsafe_allow_html=True)
         for vaccine, info in eligible_vaccines.items():
             st.write(f"{vaccine}: {info['doses']} doses")
 
@@ -61,19 +63,18 @@ if age > 0:
             st.write("Here is the timeline for the vaccines:")
             for vaccine, info in eligible_vaccines.items():
                 if vaccine not in vaccine_selection:
-                    st.markdown(f"**{vaccine}**")
+                    st.markdown(f"**{vaccine}**", unsafe_allow_html=True)
                     for dose, time in info["timeline"].items():
                         st.write(f"{dose}: {time}")
 
             # If user wants to check completion
-            show_completion_key = "show_completion"
-            default_value = "No"
-            st.session_state[show_completion_key] = default_value
-            show_completion = st.radio("Would you like to know if you have completed the series for the vaccines already taken?", ["Yes", "No"], key=show_completion_key)
+            st.markdown("**Would you like to know if you have completed the series for the vaccines already taken?**", unsafe_allow_html=True)
+            show_completion = st.radio("", ["Yes", "No"], index=1)
             if show_completion == "Yes":
                 for vaccine in vaccine_selection:
                     if vaccine != "None":
-                        doses_taken = st.number_input(f"How many doses of {vaccine} have you taken?", min_value=0, value=0)
+                        st.markdown(f"**How many doses of {vaccine} have you taken?**", unsafe_allow_html=True)
+                        doses_taken = st.number_input("", min_value=0, value=0)
                         if doses_taken > 0:
                             doses_needed = eligible_vaccines[vaccine]["doses"] - doses_taken
                             if doses_needed > 0:
