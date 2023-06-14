@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel("vaccinedic1.xlsx")
+vaccine_df = pd.read_excel("vaccines3.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
@@ -11,11 +11,14 @@ for _, row in vaccine_df.iterrows():
     doses = row["# of doses"]
     age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
     doses_info = {}
-    for i in range(1, doses + 1):
-        dose_min = row[f"Dose {i} Min"]
-        dose_max = row[f"Dose {i} Max"]
-        doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
-    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info}
+    timeline = {}
+    for i in range(1, 6):  # Adjusted to include Dose 1 to Dose 5
+        if row[f"Dose {i}"] != 'X':  # If the cell is not 'X'
+            dose_min = row[f"Dose {i} Min"]
+            dose_max = row[f"Dose {i} Max"]
+            doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
+            timeline[f"Dose {i}"] = row[f"Dose {i}"]
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline}
 
 # Define the months and years options
 months_options = list(range(13))  # 0 to 12
@@ -47,6 +50,13 @@ if age > 0:
 
         # Ask the user which vaccines they have already taken
         vaccine_selection = st.multiselect("Select the vaccines you have already taken:", list(eligible_vaccines.keys()))
+
+        # For each vaccine not selected by the user, print the timeline
+        for vaccine, info in eligible_vaccines.items():
+            if vaccine not in vaccine_selection:
+                st.write(f"The timeline for {vaccine} is:")
+                for dose, time in info["timeline"].items():
+                    st.write(f"{dose}: {time}")
 
         # For each vaccine the user has taken, check if they need any more doses
         for vaccine in vaccine_selection:
