@@ -23,22 +23,29 @@ years_options = list(range(19))  # 0 to 18
 
 # Function to reset the program
 def reset_program():
-    st.session_state.clear()
+    st.session_state.restart = True
+
+# Function to check if restart button is clicked
+def is_restart_clicked():
+    if "restart" not in st.session_state:
+        st.session_state.restart = False
+    return st.session_state.restart
 
 # Welcome message and program description
 st.title("Vaccine Recommendation Program")
 st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
 
-# Ask the user for their age
-age_month = st.selectbox("Select your age (months):", months_options)
-age_year = st.selectbox("Select your age (years):", years_options)
+# Check if restart button is clicked
+restart_clicked = is_restart_clicked()
 
-# Start button
-if st.button("Start"):
-    # Calculate the age in months
-    age = age_month + age_year * 12
+# Start the program
+if not restart_clicked:
+    # Ask the user for their age
+    age_month = st.selectbox("Select your age (months):", months_options)
+    age_year = st.selectbox("Select your age (years):", years_options)
 
     # Determine which vaccines the user is eligible for
+    age = age_month + age_year * 12
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
     # If the user is not eligible for any vaccines, print a message and exit
@@ -65,6 +72,7 @@ if st.button("Start"):
                 else:
                     st.write(f"You have completed the required doses for {vaccine_key}.")
 
-# Restart button
-if st.button("Restart"):
-    reset_program()
+    # Restart button
+    st.button("Restart", on_click=reset_program)
+else:
+    st.experimental_rerun()
