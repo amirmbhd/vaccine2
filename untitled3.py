@@ -1,12 +1,21 @@
 import streamlit as st
+import pandas as pd
 
-# Define the vaccines and their information
-vaccines = {
-    "Hib": {"ages": range(2, 16), "doses": 3, "name": "Haemophilus influenzae type b"},
-    "HepA": {"ages": range(12, 24), "doses": 2, "name": "Hepatitis A"},
-    "HPV": {"ages": range(9, 19), "doses": 2, "name": "Human papillomavirus"},
-    "Influenza": {"ages": range(6, 200), "doses": 1, "name": "Influenza"}
-}
+# Read the vaccine information from the Excel file
+vaccine_df = pd.read_excel("vaccine_info.xlsx")
+
+# Convert the DataFrame to a dictionary
+vaccines = {}
+for _, row in vaccine_df.iterrows():
+    vaccine = row["Vaccine"]
+    doses = row["# of doses"]
+    age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
+    doses_info = {}
+    for i in range(1, doses + 1):
+        dose_min = row[f"Dose {i} Min"]
+        dose_max = row[f"Dose {i} Max"]
+        doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info}
 
 # Define the months and years options
 months_options = list(range(13))  # 0 to 12
@@ -32,7 +41,7 @@ if not eligible_vaccines:
 else:
     # Otherwise, print the eligible vaccines
     st.write("You are eligible for the following vaccines:")
-    vaccine_options = [f"{k}: {v['name']}" for k, v in eligible_vaccines.items()]
+    vaccine_options = [f"{k}: {v['doses']} doses" for k, v in eligible_vaccines.items()]
     for i, option in enumerate(vaccine_options, start=1):
         st.write(f"{i}. {option}")
 
