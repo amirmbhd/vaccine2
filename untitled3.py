@@ -51,7 +51,11 @@ if age > 0:
         # For each vaccine the user has taken, check if they need any more doses
         for vaccine in vaccine_selection:
             vaccine_key = vaccine.strip()
-            show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"], "No")
+            default_value = "No"
+            show_completion_key = f"show_completion_{vaccine_key}"
+            if show_completion_key not in st.session_state:
+                st.session_state[show_completion_key] = default_value
+            show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"], key=show_completion_key)
             if show_completion == "Yes":
                 doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
                 if doses_taken > 0:
