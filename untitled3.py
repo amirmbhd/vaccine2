@@ -43,16 +43,12 @@ if st.button("Start"):
     else:
         # Otherwise, print the eligible vaccines
         st.write("You are eligible for the following vaccines:")
-        vaccine_options = [f"{k}: {v['doses']} doses" for k, v in eligible_vaccines.items()]
-        for i, option in enumerate(vaccine_options, start=1):
-            st.write(f"{i}. {option}")
-
-        # Ask the user which vaccines they have already taken
+        vaccine_options = list(eligible_vaccines.keys())
         vaccine_selection = st.multiselect("Select the vaccines you have already taken:", vaccine_options)
 
         # For each vaccine the user has taken, check if they need any more doses
         for vaccine in vaccine_selection:
-            vaccine_key = vaccine.split(":")[0].strip()
+            vaccine_key = vaccine
             show_completion = st.checkbox(f"Do you want to check if you have completed the series for {vaccine_key}?")
             if show_completion:
                 doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
