@@ -47,7 +47,7 @@ if age > 0:
         for vaccine, info in eligible_vaccines.items():
             st.write(f"{vaccine}: {info['doses']} doses")
 
-        st.markdown("**<span style='color:blue'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
+        st.markdown("**<span style='color:#000080'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
         st.markdown("<i>(You can select more than one. This will display the timeline of the vaccines you need to take and allow you to check if you have completed the series for the vaccines already taken.)</i>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
@@ -59,12 +59,12 @@ if age > 0:
                     for dose, time in info["timeline"].items():
                         st.write(f"{dose}: {time}")
 
-            st.markdown("**<span style='color:blue'>Would you like to know if you have completed the series for the vaccines already taken?</span>**", unsafe_allow_html=True)
+            st.markdown("**<span style='color:#000080'>Would you like to know if you have completed the series for the vaccines already taken?</span>**", unsafe_allow_html=True)
             show_completion = st.radio("", ["Yes", "No"], index=1)
             if show_completion == "Yes":
                 for vaccine in vaccine_selection:
                     if vaccine != "None":
-                        st.markdown(f"**<span style='color:red'>How many doses of {vaccine} have you taken?</span>**", unsafe_allow_html=True)
+                        st.markdown(f"**<span style='color:#708090'>How many doses of {vaccine} have you taken?</span>**", unsafe_allow_html=True)
                         doses_taken = st.number_input("", min_value=0, value=0, key=f"{vaccine}_doses_taken")
                         if doses_taken > 0:
                             doses_needed = eligible_vaccines[vaccine]["doses"] - doses_taken
