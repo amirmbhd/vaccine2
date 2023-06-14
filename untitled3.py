@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel("vaccine_info.xlsx")
+vaccine_df = pd.read_excel("vaccinedic1.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
