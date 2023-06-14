@@ -49,7 +49,9 @@ if age > 0:
             st.write(f"{vaccine}: {info['doses']} doses")
 
         # Ask the user which vaccines they have already taken
-        vaccine_selection = st.multiselect("Select the vaccines you have already taken:", ["None"] + list(eligible_vaccines.keys()))
+        st.markdown("**Select the vaccines you have already taken:**", unsafe_allow_html=True)
+        st.markdown("<i>(You can select more than one option. This will display the timeline of the vaccines you need to take and allows you to check if you have completed the series for the vaccines already taken)</i>", unsafe_allow_html=True)
+        vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
         # If user selected at least one option
         if vaccine_selection:
@@ -62,12 +64,11 @@ if age > 0:
                     st.markdown(f"**{vaccine}**")
                     for dose, time in info["timeline"].items():
                         st.write(f"{dose}: {time}")
-    
-            # Ask if user wants to check if they have completed the series for taken vaccines
-            default_value = "No"
+
+            # If user wants to check completion
             show_completion_key = "show_completion"
-            if show_completion_key not in st.session_state:
-                st.session_state[show_completion_key] = default_value
+            default_value = "No"
+            st.session_state[show_completion_key] = default_value
             show_completion = st.radio("Would you like to know if you have completed the series for the vaccines already taken?", ["Yes", "No"], key=show_completion_key)
             if show_completion == "Yes":
                 for vaccine in vaccine_selection:
