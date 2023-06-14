@@ -28,11 +28,10 @@ years_options = list(range(19))  # 0 to 18
 st.title("Vaccine Recommendation Program")
 st.write("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
 
-# Ask the user for their age
-st.markdown("**Select your age (months):**", unsafe_allow_html=True)
-age_month = st.selectbox("", months_options)
-st.markdown("**Select your age (years):**", unsafe_allow_html=True)
-age_year = st.selectbox("", years_options)
+# Sidebar for user inputs
+st.sidebar.markdown("**Please enter your age:**", unsafe_allow_html=True)
+age_month = st.sidebar.selectbox("Months:", months_options)
+age_year = st.sidebar.selectbox("Years:", years_options)
 
 # Calculate the age in months
 age = age_month + age_year * 12
