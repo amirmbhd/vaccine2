@@ -50,24 +50,23 @@ if age > 0:
         closest_meningococcal = min(meningococcal_vaccines, key=lambda v: abs(vaccines[v]["min_age"] - age))
         eligible_vaccines = {k: v for k, v in eligible_vaccines.items() if "Meningococcal" not in k}
         eligible_vaccines[f"Meningococcal ({types})"] = vaccines[closest_meningococcal]
-        vaccines[f"Meningococcal ({types})"] = vaccines[closest_meningococcal]
 
     if not eligible_vaccines:
-        st.markdown("**<span style='color:#708090'>You are not currently eligible for any vaccines.</span>**", unsafe_allow_html=True)
+        st.markdown("**<span style='color:#000080'>You are not currently eligible for any vaccines.</span>**", unsafe_allow_html=True)
     else:
-        st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
-        for vaccine in eligible_vaccines:
-            st.markdown(f"**<span style='color:#708090'>{vaccine}</span>**", unsafe_allow_html=True)
+        st.markdown("**<span style='color:#000080'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
+        for vaccine, info in eligible_vaccines.items():
+            st.markdown(f"**<span style='color:#000080'>{vaccine}</span>** (Total Doses: {info['doses']})", unsafe_allow_html=True)
         
         st.markdown("**<span style='color:#000080'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
         st.markdown("<span style='color:#708090'>This will help us determine the timeline for your future vaccinations and check if you have completed your vaccination series. Note that you can select multiple options.</span>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
         if vaccine_selection and "None" not in vaccine_selection:
-            st.markdown("**<span style='color:#708090'>The timeline for your vaccines:</span>**", unsafe_allow_html=True)
+            st.markdown("**<span style='color:#000080'>The timeline for your vaccines:</span>**", unsafe_allow_html=True)
             for vaccine in vaccine_selection:
                 if vaccine != "None":
-                    st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
+                    st.markdown(f"**<span style='color:#000080'>{vaccine}:</span>**", unsafe_allow_html=True)
                     for dose, time in vaccines[vaccine]["timeline"].items():
                         st.write(f"{dose}: {time}")
 
@@ -76,7 +75,7 @@ if age > 0:
             if show_completion == "Yes":
                 for vaccine in vaccine_selection:
                     if vaccine != "None":
-                        st.markdown(f"**<span style='color:#708090'>How many doses of {vaccine} have you taken?</span>**", unsafe_allow_html=True)
+                        st.markdown(f"**<span style='color:#000080'>How many doses of {vaccine} have you taken?</span>**", unsafe_allow_html=True)
                         doses_taken = st.number_input("", min_value=0, value=0, key=f"{vaccine}_doses_taken")
                         if doses_taken > 0:
                             doses_needed = vaccines[vaccine]["doses"] - doses_taken
