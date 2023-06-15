@@ -79,11 +79,12 @@ if age > 0:
                 if vaccine.startswith("Meningococcal:") and meningococcal_note:
                     st.markdown("<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>", unsafe_allow_html=True)
 
-            check_completion = st.radio("Do you want to check if you have completed the series for any of your taken vaccines?", ["No", "Yes"], index=0)
-            if check_completion == "Yes":
-                for vaccine in vaccine_selection:
-                    vaccine_key = vaccine.strip()
-                    doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0, key=f"{vaccine_key}_doses_taken")
+            st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+            for vaccine in vaccine_selection:
+                vaccine_key = vaccine.strip()
+                show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"])
+                if show_completion == "Yes":
+                    doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
                     if doses_taken > 0:
                         doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
                         if doses_needed > 0:
