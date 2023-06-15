@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-import SessionState
-from SessionState import get
+
 
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
