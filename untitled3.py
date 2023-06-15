@@ -95,7 +95,7 @@ if age > 0:
                 if show_completion == "Yes":
                     doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
                     if doses_taken > 0:
-                        doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
+                        doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
                         if doses_needed > 0:
                             st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
                         else:
