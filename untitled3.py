@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_session_state import get as get_state  # Import the get_state function
 import pandas as pd
 
 # Read the vaccine information from the Excel file
@@ -37,9 +36,6 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
-
-# Create a state object for maintaining the state of checkboxes and number inputs
-state = get_state(show_completion={}, doses_taken={})
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -124,23 +120,33 @@ if age > 0:
                     )
 
             st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+
+            # Generate checkboxes and number inputs for each vaccine at once
+            check_completion_dict = {}
+            doses_taken_dict = {}
             for vaccine in vaccine_selection:
                 vaccine_key = vaccine.strip()
-                state.show_completion[vaccine_key] = st.checkbox(
-                    f"Do you want to check if you have completed the series for {vaccine_key}?",
-                    value=state.show_completion.get(vaccine_key, False),
+                check_completion_dict[vaccine_key] = st.checkbox(
+                    f"Do you want to check if you have completed the series for {vaccine_key}?"
                 )
-                if state.show_completion[vaccine_key]:
-                    state.doses_taken[vaccine_key] = st.number_input(
+                if check_completion_dict[vaccine_key]:
+                    doses_taken_dict[vaccine_key] = st.number_input(
                         f"How many doses of {vaccine_key} have you taken?",
                         min_value=0,
-                        value=state.doses_taken.get(vaccine_key, 0),
+                        value=0,
                     )
-                    if state.doses_taken[vaccine_key] > 0:
-                        doses_needed = vaccines[vaccine_key]["doses"] - state.doses_taken[vaccine_key]
-                        if doses_needed > 0:
-                            st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
-                        else:
-                            st.write(f"You have completed the required doses for {vaccine_key}.")
+
+            # Now that we have the inputs, calculate the doses needed for each vaccine
+            for vaccine in vaccine_selection:
+                vaccine_key = vaccine.strip()
+                if check_completion_dict[vaccine_key] and doses_taken_dict[vaccine_key] > 0:
+                    doses_needed = vaccines[vaccine_key]["doses"] - doses_taken_dict[vaccine_key]
+                    if doses_needed > 0:
+                        st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                    else:
+                        st.write(f"You have completed the series for {vaccine_key}.")
+
+        else:
+            st.write("You did not select any vaccines. Please try again.")
 else:
-    st.write(" ")
+    st.markdown("**You have to enter your age!**")
