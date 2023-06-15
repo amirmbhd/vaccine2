@@ -63,7 +63,10 @@ if age > 0:
         vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
 
         if vaccine_selection and "None" not in vaccine_selection and vaccines_not_taken:
-            if st.button("Generate Vaccine Timeline"):
+            if st.sidebar.button("Generate Vaccine Recommendation"):
+                st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
+                for vaccine, info in eligible_vaccines.items():
+                    st.write(f"{vaccine}: {info['doses']} doses")
                 st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine in vaccines_not_taken:
                     st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
