@@ -1,6 +1,6 @@
 import streamlit as st
+from streamlit_session_state import get as get_state  # Import the get_state function
 import pandas as pd
-import SessionState
 
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
@@ -37,6 +37,9 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
+
+# Create a state object for maintaining the state of checkboxes and number inputs
+state = get_state(show_completion={}, doses_taken={})
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -80,65 +83,64 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    session_state = SessionState.get(show_completion={}, doses_taken={})  # Add this line
+    # Create a form that requires the user to submit
+    with st.sidebar.form(key="my_form"):
+        submit_button = st.form_submit_button(label="Generate Vaccine Recommendation")
 
-    if vaccine_selection and "None" not in vaccine_selection:
-        vaccines_not_taken = [
-            vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection
-        ]
+    if submit_button:
+        if vaccine_selection and "None" not in vaccine_selection:
+            vaccines_not_taken = [
+                vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection
+            ]
 
-        # Define the data for the table
-        data = []
-        for vaccine, info in eligible_vaccines.items():
-            status = "Completed" if vaccine in vaccine_selection else "Pending"
-            data.append([vaccine, info["doses"], status])
+            # Define the data for the table
+            data = []
+            for vaccine, info in eligible_vaccines.items():
+                status = "Completed" if vaccine in vaccine_selection else "Pending"
+                data.append([vaccine, info["doses"], status])
 
-        # Create the DataFrame
-        df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
-        df = df.sort_values(by="Status", ascending=False)
+            # Create the DataFrame
+            df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
+            df = df.sort_values(by="Status", ascending=False)
 
-        # Display the table
-        st.table(df.style.set_properties(**{"text-align": "center"}).\
-            set_table_styles([{'selector': 'th', 'props': [('font-weight', 'bold')]}]))
+            # Display the table
+            st.table(df.style.set_properties(**{"text-align": "center"}).\
+                set_table_styles([{'selector': 'th', 'props': [('font-weight', 'bold')]}]))
 
-        st.markdown(
-            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
-            unsafe_allow_html=True,
-        )
-        for vaccine in vaccines_not_taken:
             st.markdown(
-                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+                "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+                unsafe_allow_html=True,
             )
-            for dose, time in eligible_vaccines[vaccine]["timeline"].items():
-                st.write(f"{dose}: {time}")
-            if vaccine.startswith("Meningococcal:") and meningococcal_note:
+            for vaccine in vaccines_not_taken:
                 st.markdown(
-                    "<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>",
-                    unsafe_allow_html=True,
+                    f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
                 )
+                for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+                    st.write(f"{dose}: {time}")
+                if vaccine.startswith("Meningococcal:") and meningococcal_note:
+                    st.markdown(
+                        "<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>",
+                        unsafe_allow_html=True,
+                    )
 
-        st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
-        for vaccine in vaccine_selection:
-            vaccine_key = vaccine.strip()
-            if vaccine_key not in session_state.show_completion:
-                session_state.show_completion[vaccine_key] = False
-            session_state.show_completion[vaccine_key] = st.checkbox(
-                f"Do you want to check if you have completed the series for {vaccine_key}?",
-                value=session_state.show_completion[vaccine_key],
-            )
-            if session_state.show_completion[vaccine_key]:
-                if vaccine_key not in session_state.doses_taken:
-                    session_state.doses_taken[vaccine_key] = 0
-                session_state.doses_taken[vaccine_key] = st.number_input(
-                    f"How many doses of {vaccine_key} have you taken?",
-                    min_value=0,
-                    value=session_state.doses_taken[vaccine_key],
+            st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+            for vaccine in vaccine_selection:
+                vaccine_key = vaccine.strip()
+                state.show_completion[vaccine_key] = st.checkbox(
+                    f"Do you want to check if you have completed the series for {vaccine_key}?",
+                    value=state.show_completion.get(vaccine_key, False),
                 )
-                if session_state.doses_taken[vaccine_key] > 0:
-                    doses_needed = vaccines[vaccine_key]["doses"] - session_state.doses_taken[vaccine_key]
-                    if doses_needed > 0:
-                        st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
-                    else:
-                        st.write(f"You have completed the required doses for {vaccine_key}.")
+                if state.show_completion[vaccine_key]:
+                    state.doses_taken[vaccine_key] = st.number_input(
+                        f"How many doses of {vaccine_key} have you taken?",
+                        min_value=0,
+                        value=state.doses_taken.get(vaccine_key, 0),
+                    )
+                    if state.doses_taken[vaccine_key] > 0:
+                        doses_needed = vaccines[vaccine_key]["doses"] - state.doses_taken[vaccine_key]
+                        if doses_needed > 0:
+                            st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                        else:
+                            st.write(f"You have completed the required doses for {vaccine_key}.")
 else:
     st.write(" ")
