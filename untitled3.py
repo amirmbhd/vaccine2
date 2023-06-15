@@ -80,3 +80,4 @@ if age > 0:
                                 st.write(f"You need {doses_needed} more doses of {vaccine}.")
                             else:
                                 st.write(f"You have completed the required doses for {vaccine}.")
+
