@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from SessionState import get
 
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
@@ -36,6 +37,8 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
+
+session_state = get(vaccine_selection=[], show_completion={}, doses_taken={})
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -122,19 +125,19 @@ if age > 0:
             st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
             for vaccine in vaccine_selection:
                 vaccine_key = vaccine.strip()
-                show_completion = st.radio(
+                session_state.show_completion[vaccine_key] = st.radio(
                     f"Do you want to check if you have completed the series for {vaccine_key}?",
                     ["No", "Yes"],
-                    index=0,
+                    index=int(session_state.show_completion.get(vaccine_key, "No") == "Yes"),
                 )
-                if show_completion == "Yes":
-                    doses_taken = st.number_input(
+                if session_state.show_completion[vaccine_key] == "Yes":
+                    session_state.doses_taken[vaccine_key] = st.number_input(
                         f"How many doses of {vaccine_key} have you taken?",
                         min_value=0,
-                        value=0,
+                        value=session_state.doses_taken.get(vaccine_key, 0),
                     )
-                    if doses_taken > 0:
-                        doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                    if session_state.doses_taken[vaccine_key] > 0:
+                        doses_needed = vaccines[vaccine_key]["doses"] - session_state.doses_taken[vaccine_key]  # Use 'vaccines' instead of 'eligible_vaccines'
                         if doses_needed > 0:
                             st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
                         else:
