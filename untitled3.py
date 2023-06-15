@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from streamlit import components
 
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
@@ -63,8 +64,16 @@ if age > 0:
         if vaccine_selection and "None" not in vaccine_selection and vaccines_not_taken:
             if st.sidebar.button("Generate Vaccine Recommendation"):
                 st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
+                
+                # Create a table for eligible vaccines
+                table_data = []
                 for vaccine, info in eligible_vaccines.items():
-                    st.write(f"{vaccine}: {info['doses']} doses")
+                    table_data.append([vaccine, info['doses'], 'Pending'])
+                table_data = sorted(table_data, key=lambda x: x[2])
+                table_data.insert(0, ['Vaccine Name', 'Total Doses', 'Status'])
+                
+                components.v1.table(table_data, key='table_eligible_vaccines', height=200, width=600)
+                
                 st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine in vaccines_not_taken:
                     st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
