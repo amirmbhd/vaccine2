@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import st.session_state as session_state
 
 
 # Read the vaccine information from the Excel file
@@ -39,7 +38,7 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
-session_state = get(vaccine_selection=[], show_completion={}, doses_taken={})
+st.session_state = get(vaccine_selection=[], show_completion={}, doses_taken={})
 
 if age > 0:
     # Determine which vaccines the user is eligible for
