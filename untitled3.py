@@ -28,7 +28,7 @@ st.title("Vaccine Recommendation Program")
 
 st.markdown("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**")
 
-st.sidebar.markdown("**Please enter your age:**", unsafe_allow_html=True)
+st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
 
@@ -57,12 +57,12 @@ if age > 0:
 
     if eligible_vaccines:
         st.sidebar.markdown("**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**", unsafe_allow_html=True)
-        vaccine_selection = st.sidebar.radio("", list(eligible_vaccines.keys()) + ["None"])
+        vaccine_selection = st.sidebar.multiselect("", list(eligible_vaccines.keys()) + ["None"])
 
         # Vaccines user hasn't taken yet
-        vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine != vaccine_selection]
+        vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
 
-        if vaccine_selection and "None" != vaccine_selection and vaccines_not_taken:
+        if vaccine_selection and "None" not in vaccine_selection and vaccines_not_taken:
             if st.button("Generate Vaccine Timeline"):
                 st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine in vaccines_not_taken:
@@ -71,5 +71,20 @@ if age > 0:
                         st.write(f"{dose}: {time}")
                     if vaccine.startswith("Meningococcal:") and meningococcal_note:
                         st.markdown("<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>", unsafe_allow_html=True)
+            for vaccine in vaccine_selection:
+                vaccine_key = vaccine.strip()
+                default_value = "No"
+                show_completion_key = f"show_completion_{vaccine_key}"
+                if show_completion_key not in st.session_state:
+                    st.session_state[show_completion_key] = default_value
+                show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"], key=show_completion_key)
+                if show_completion == "Yes":
+                    doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
+                    if doses_taken > 0:
+                        doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
+                        if doses_needed > 0:
+                            st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                        else:
+                            st.write(f"You have completed the required doses for {vaccine_key}.")
 else:
     st.write("Please enter your age.")
