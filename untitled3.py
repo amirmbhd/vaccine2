@@ -61,3 +61,44 @@ if age > 0:
 
     # Create a form that requires the user to submit
     with st.sidebar.form(key='my_form'):
+        submit_button = st.form_submit_button(label='Generate Vaccine Recommendation')
+
+    if submit_button:
+        if vaccine_selection and "None" not in vaccine_selection:
+            vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
+
+            # Define the data for the table
+            data = []
+            for vaccine, info in eligible_vaccines.items():
+                status = "Completed" if vaccine in vaccine_selection else "Pending"
+                data.append([vaccine, info['doses'], status])
+
+            # Create the DataFrame
+            df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
+            df = df.sort_values(by="Status", ascending=False)
+
+            # Display the table
+            st.table(df.style.hide().set_properties(**{'text-align': 'center'}))
+
+            st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
+            for vaccine in vaccines_not_taken:
+                st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
+                for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+                    st.write(f"{dose}: {time}")
+                if vaccine.startswith("Meningococcal:") and meningococcal_note:
+                    st.markdown("<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>", unsafe_allow_html=True)
+
+            st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+            for vaccine in vaccine_selection:
+                vaccine_key = vaccine.strip()
+                show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["No", "Yes"], index=0)
+                if show_completion == "Yes":
+                    doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
+                    if doses_taken > 0:
+                        doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                        if doses_needed > 0:
+                            st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                        else:
+                            st.write(f"You have completed the required doses for {vaccine_key}.")
+else:
+    st.write(" ")
