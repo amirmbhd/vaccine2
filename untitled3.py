@@ -73,7 +73,7 @@ if age > 0:
                 for dose, time in eligible_vaccines[vaccine]["timeline"].items():
                     st.write(f"{dose}: {time}")
                 if vaccine.startswith("Meningococcal:") and meningococcal_note:
-                    st.markdown("<span style='color:#708090'>(Note: You are eligible for other types of Meningococcal vaccines with different schedules.)</span>", unsafe_allow_html=True)
+                    st.markdown("<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>", unsafe_allow_html=True)
 
             st.markdown("**<span style='color:#000080'>Would you like to know if you have completed the series for the vaccines already taken?</span>**", unsafe_allow_html=True)
             show_completion = st.radio("", ["Yes", "No"], index=1)
