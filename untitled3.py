@@ -43,17 +43,24 @@ if age > 0:
     if "Pneumococcal conjugate (PCV13, PCV15, PPSV23)" in eligible_vaccines and "Pneumococcal conjugate (PCV13, PCV15)" in eligible_vaccines:
         eligible_vaccines.pop("Pneumococcal conjugate (PCV13, PCV15)")
 
-    # If the user is not eligible for any vaccines, print a message and exit
-    if not eligible_vaccines:
-        st.write("You are not currently eligible for any vaccines.")
-    else:
-        st.markdown("**You are eligible for the following vaccines:**", unsafe_allow_html=True)
-        for vaccine, info in eligible_vaccines.items():
-            st.write(f"{vaccine}: {info['doses']} doses")
+    # Special condition for interchangeable vaccines
+    interchangeable_vaccines = ["Meningococcal ACWY-D", "Meningococcal ACWY-CRM", "Meningococcal ACWY-TT", "Meningococcal B"]
+    interchangeable_vaccines_eligible = [vaccine for vaccine in interchangeable_vaccines if vaccine in eligible_vaccines]
+    if len(interchangeable_vaccines_eligible) > 1:
+        # Replace all the interchangeable vaccines with "Meningococcal"
+        for vaccine in interchangeable_vaccines_eligible:
+            eligible_vaccines.pop(vaccine)
+        closest_vaccine = min(interchangeable_vaccines_eligible, key=lambda vaccine: abs(min(vaccines[vaccine]["ages"]) - age))
+        eligible_vaccines["Meningococcal"] = vaccines[closest_vaccine]
+        st.write(f"You are eligible for Meningococcal vaccines. The timeline displayed will be for {closest_vaccine}, but you may be eligible for other types with different schedules.")
 
-        st.markdown("**<span style='color:#000080'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
-        st.markdown("<i>(You can select more than one. This will display the timeline of the vaccines you need to take and allow you to check if you have completed the series for the vaccines already taken.)</i>", unsafe_allow_html=True)
-        vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
+    if eligible_vaccines:
+        st.markdown("Based on your age, you are eligible for the following vaccines:")
+        for vaccine in eligible_vaccines.keys():
+            st.write(vaccine)
+
+        st.markdown("**<span style='color:#708090'>Please select the vaccines you have already taken (You can select multiple):</span>**", unsafe_allow_html=True)
+        vaccine_selection = st.multiselect("", list(eligible_vaccines.keys()) + ["None"])
 
         # Vaccines user hasn't taken yet
         vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
@@ -78,3 +85,4 @@ if age > 0:
                                 st.write(f"You need {doses_needed} more doses of {vaccine}.")
                             else:
                                 st.write(f"You have completed the required doses for {vaccine}.")
+
