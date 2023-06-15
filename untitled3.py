@@ -26,7 +26,7 @@ years_options = list(range(19))  # 0 to 18
 
 st.title("Vaccine Recommendation Program")
 
-st.markdown("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses.")
+st.markdown("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**")
 
 st.sidebar.markdown("**Please enter your age:**", unsafe_allow_html=True)
 age_month = st.sidebar.selectbox("Months:", months_options)
@@ -56,13 +56,13 @@ if age > 0:
         meningococcal_note = True
 
     if eligible_vaccines:
-        st.sidebar.markdown("**<span style='color:#000080'>Please select the vaccines you have already taken (You can select multiple):</span>**", unsafe_allow_html=True)
-        vaccine_selection = st.sidebar.multiselect("", list(eligible_vaccines.keys()) + ["None"])
+        st.sidebar.markdown("**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**", unsafe_allow_html=True)
+        vaccine_selection = st.sidebar.radio("", list(eligible_vaccines.keys()) + ["None"])
 
         # Vaccines user hasn't taken yet
-        vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
+        vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine != vaccine_selection]
 
-        if vaccine_selection and "None" not in vaccine_selection and vaccines_not_taken:
+        if vaccine_selection and "None" != vaccine_selection and vaccines_not_taken:
             if st.button("Generate Vaccine Timeline"):
                 st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine in vaccines_not_taken:
