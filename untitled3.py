@@ -52,36 +52,12 @@ if age > 0:
             eligible_vaccines.pop(vaccine)
         closest_vaccine = min(interchangeable_vaccines_eligible, key=lambda vaccine: abs(min(vaccines[vaccine]["ages"]) - age))
         eligible_vaccines["Meningococcal: " + closest_vaccine] = vaccines[closest_vaccine]
-        st.write("Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.")
-        
+
     if eligible_vaccines:
         st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
         for vaccine in eligible_vaccines.keys():
-            st.write(f"{vaccine}: {eligible_vaccines[vaccine]['doses']} doses")
-
-        st.markdown("**<span style='color:#000080'>Please select the vaccines you have already taken (You can select multiple):</span>**", unsafe_allow_html=True)
-        vaccine_selection = st.multiselect("", list(eligible_vaccines.keys()) + ["None"])
-
-        # Vaccines user hasn't taken yet
-        vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
-
-        if vaccine_selection and "None" not in vaccine_selection and vaccines_not_taken:
-            st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
-            for vaccine in vaccines_not_taken:
-                st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
-                for dose, time in eligible_vaccines[vaccine]["timeline"].items():
-                    st.write(f"{dose}: {time}")
-
-            st.markdown("**<span style='color:#000080'>Would you like to know if you have completed the series for the vaccines already taken?</span>**", unsafe_allow_html=True)
-            show_completion = st.radio("", ["Yes", "No"], index=1)
-            if show_completion == "Yes":
-                for vaccine in vaccine_selection:
-                    if vaccine != "None":
-                        st.markdown(f"**<span style='color:#708090'>How many doses of {vaccine} have you taken?</span>**", unsafe_allow_html=True)
-                        doses_taken = st.number_input("", min_value=0, value=0, key=f"{vaccine}_doses_taken")
-                        if doses_taken > 0:
-                            doses_needed = eligible_vaccines[vaccine]["doses"] - doses_taken
-                            if doses_needed > 0:
-                                st.write(f"You need {doses_needed} more doses of {vaccine}.")
-                            else:
-                                st.write(f"You have completed the required doses for {vaccine}.")
+            note = ""
+            if "Meningococcal" in vaccine:
+                note = " (You're eligible for multiple types of Meningococcal vaccines. The timeline displayed is for this type.)"
+            st.write(f"{vaccine}{note}: {eligible_vaccines[vaccine]['doses']} doses")
+#... rest of the code
