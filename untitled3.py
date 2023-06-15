@@ -43,22 +43,16 @@ if age > 0:
     if "Pneumococcal conjugate (PCV13, PCV15, PPSV23)" in eligible_vaccines and "Pneumococcal conjugate (PCV13, PCV15)" in eligible_vaccines:
         eligible_vaccines.pop("Pneumococcal conjugate (PCV13, PCV15)")
 
-    # Special condition for Meningococcal vaccines
-    meningococcal_vaccines = ["Meningococcal ACWY-D", "Meningococcal ACWY-CRM", "Meningococcal ACWY-TT", "Meningococcal B"]
-    selected_meningococcal_vaccines = [vaccine for vaccine in meningococcal_vaccines if vaccine in eligible_vaccines]
-    if len(selected_meningococcal_vaccines) > 1:
-        for vaccine in selected_meningococcal_vaccines[1:]:
-            eligible_vaccines.pop(vaccine)
-
     # If the user is not eligible for any vaccines, print a message and exit
     if not eligible_vaccines:
         st.write("You are not currently eligible for any vaccines.")
     else:
         st.markdown("**You are eligible for the following vaccines:**", unsafe_allow_html=True)
-        for vaccine in eligible_vaccines.keys():
-            st.write(vaccine)
+        for vaccine, info in eligible_vaccines.items():
+            st.write(f"{vaccine}: {info['doses']} doses")
 
         st.markdown("**<span style='color:#000080'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
+        st.markdown("<i>(You can select more than one. This will display the timeline of the vaccines you need to take and allow you to check if you have completed the series for the vaccines already taken.)</i>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
         if vaccine_selection and "None" not in vaccine_selection:
