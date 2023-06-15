@@ -60,4 +60,4 @@ if age > 0:
     vaccine_selection = st.sidebar.multiselect("", list(eligible_vaccines.keys()) + ["None"])
 
     # Create a form that requires the user to submit
-    with st.sidebar.form(key
+    with st.sidebar.form(key='my_form'):
