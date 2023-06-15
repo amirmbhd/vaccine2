@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from streamlit import components
 
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
@@ -72,7 +71,7 @@ if age > 0:
                 table_data = sorted(table_data, key=lambda x: x[2])
                 table_data.insert(0, ['Vaccine Name', 'Total Doses', 'Status'])
                 
-                components.v1.table(table_data, key='table_eligible_vaccines', height=200, width=600)
+                st.table(table_data)
                 
                 st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine in vaccines_not_taken:
