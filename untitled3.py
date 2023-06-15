@@ -9,7 +9,7 @@ vaccines = {}
 for _, row in vaccine_df.iterrows():
     vaccine = row["Vaccine"]
     doses = row["# of doses"]
-    age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
+    age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)  # Now in days
     doses_info = {}
     timeline = {}
     for i in range(1, 6):  # Adjusted to include Dose 1 to Dose 5
@@ -32,8 +32,8 @@ st.sidebar.markdown("**Please enter your age:**", unsafe_allow_html=True)
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
 
-# Calculate the age in months
-age = age_month + age_year * 12
+# Calculate the age in days
+age = (age_month * 30) + (age_year * 365)
 
 if age > 0:
     # Determine which vaccines the user is eligible for
