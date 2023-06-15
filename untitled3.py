@@ -83,7 +83,7 @@ if age > 0:
             if check_completion == "Yes":
                 for vaccine in vaccine_selection:
                     vaccine_key = vaccine.strip()
-                    doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
+                    doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0, key=f"{vaccine_key}_doses_taken")
                     if doses_taken > 0:
                         doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
                         if doses_needed > 0:
