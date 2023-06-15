@@ -50,11 +50,15 @@ if age > 0:
         closest_meningococcal = min(meningococcal_vaccines, key=lambda v: abs(vaccines[v]["min_age"] - age))
         eligible_vaccines = {k: v for k, v in eligible_vaccines.items() if "Meningococcal" not in k}
         eligible_vaccines[f"Meningococcal ({types})"] = vaccines[closest_meningococcal]
+        vaccines[f"Meningococcal ({types})"] = vaccines[closest_meningococcal]
 
-    # If the user is not eligible for any vaccines
     if not eligible_vaccines:
-        st.write("You are not currently eligible for any vaccines.")
+        st.markdown("**<span style='color:#708090'>You are not currently eligible for any vaccines.</span>**", unsafe_allow_html=True)
     else:
+        st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
+        for vaccine in eligible_vaccines:
+            st.markdown(f"**<span style='color:#708090'>{vaccine}</span>**", unsafe_allow_html=True)
+        
         st.markdown("**<span style='color:#000080'>Select the vaccines you have already taken:</span>**", unsafe_allow_html=True)
         st.markdown("<span style='color:#708090'>This will help us determine the timeline for your future vaccinations and check if you have completed your vaccination series. Note that you can select multiple options.</span>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
@@ -80,4 +84,3 @@ if age > 0:
                                 st.write(f"You need {doses_needed} more doses of {vaccine}.")
                             else:
                                 st.write(f"You have completed the required doses for {vaccine}.")
-
