@@ -9,7 +9,7 @@ vaccines = {}
 for _, row in vaccine_df.iterrows():
     vaccine = row["Vaccine"]
     doses = row["# of doses"]
-    age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)  # Now in days
+    age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
     doses_info = {}
     timeline = {}
     for i in range(1, 6):  # Adjusted to include Dose 1 to Dose 5
@@ -39,6 +39,10 @@ if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
+    # Special condition for similar vaccines
+    if "Pneumococcal conjugate (PCV13, PCV15, PPSV23)" in eligible_vaccines and "Pneumococcal conjugate (PCV13, PCV15)" in eligible_vaccines:
+        eligible_vaccines.pop("Pneumococcal conjugate (PCV13, PCV15)")
+
     # If the user is not eligible for any vaccines, print a message and exit
     if not eligible_vaccines:
         st.write("You are not currently eligible for any vaccines.")
@@ -51,11 +55,11 @@ if age > 0:
         st.markdown("<i>(You can select more than one. This will display the timeline of the vaccines you need to take and allow you to check if you have completed the series for the vaccines already taken.)</i>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
-        if vaccine_selection:
-            st.markdown("**The timeline for the following vaccines is displayed below:**", unsafe_allow_html=True)
-            for vaccine, info in eligible_vaccines.items():
-                if vaccine not in vaccine_selection:
-                    st.markdown(f"**<span style='color:green'>{vaccine}</span>**", unsafe_allow_html=True)
+        if vaccine_selection and "None" not in vaccine_selection:
+            st.markdown("**<span style='color:#708090'>The timeline for your vaccines:</span>**", unsafe_allow_html=True)
+            for vaccine in vaccine_selection:
+                if vaccine != "None":
+                    st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
                     for dose, time in info["timeline"].items():
                         st.write(f"{dose}: {time}")
 
