@@ -61,10 +61,12 @@ if age > 0:
 
         if vaccine_selection and "None" not in vaccine_selection:
             vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
+
             if st.sidebar.button("Generate Vaccine Recommendation"):
                 st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine, info in eligible_vaccines.items():
                     st.write(f"{vaccine}: {info['doses']} doses")
+
                 st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
                 for vaccine in vaccines_not_taken:
                     st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
@@ -72,21 +74,22 @@ if age > 0:
                         st.write(f"{dose}: {time}")
                     if vaccine.startswith("Meningococcal:") and meningococcal_note:
                         st.markdown("<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>", unsafe_allow_html=True)
-                        
-                    for vaccine in vaccine_selection:
-                        vaccine_key = vaccine.strip()
-                        default_value = "No"
-                        show_completion_key = f"show_completion_{vaccine_key}"
-                        if show_completion_key not in st.session_state:
-                            st.session_state[show_completion_key] = default_value
-                        show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"], key=show_completion_key)
-                        if show_completion == "Yes":
-                            doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
-                            if doses_taken > 0:
-                                doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
-                                if doses_needed > 0:
-                                    st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
-                                else:
-                                    st.write(f"You have completed the required doses for {vaccine_key}.")
+
+                st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+                for vaccine in vaccine_selection:
+                    vaccine_key = vaccine.strip()
+                    default_value = "No"
+                    show_completion_key = f"show_completion_{vaccine_key}"
+                    if show_completion_key not in st.session_state:
+                        st.session_state[show_completion_key] = default_value
+                    show_completion = st.radio(f"Do you want to check if you have completed the series for {vaccine_key}?", ["Yes", "No"], key=show_completion_key)
+                    if show_completion == "Yes":
+                        doses_taken = st.number_input(f"How many doses of {vaccine_key} have you taken?", min_value=0, value=0)
+                        if doses_taken > 0:
+                            doses_needed = eligible_vaccines[vaccine_key]["doses"] - doses_taken
+                            if doses_needed > 0:
+                                st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                            else:
+                                st.write(f"You have completed the required doses for {vaccine_key}.")
 else:
     st.write("Please enter your age.")
