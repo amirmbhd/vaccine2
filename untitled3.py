@@ -55,13 +55,15 @@ if age > 0:
         st.markdown("<i>(You can select more than one. This will display the timeline of the vaccines you need to take and allow you to check if you have completed the series for the vaccines already taken.)</i>", unsafe_allow_html=True)
         vaccine_selection = st.multiselect("", ["None"] + list(eligible_vaccines.keys()))
 
-        if vaccine_selection and "None" not in vaccine_selection:
+        # Vaccines user hasn't taken yet
+        vaccines_not_taken = [vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection]
+
+        if vaccine_selection and "None" not in vaccine_selection and vaccines_not_taken:
             st.markdown("**<span style='color:#708090'>The timeline for your vaccines:</span>**", unsafe_allow_html=True)
-            for vaccine in vaccine_selection:
-                if vaccine != "None":
-                    st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
-                    for dose, time in info["timeline"].items():
-                        st.write(f"{dose}: {time}")
+            for vaccine in vaccines_not_taken:
+                st.markdown(f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True)
+                for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+                    st.write(f"{dose}: {time}")
 
             st.markdown("**<span style='color:#000080'>Would you like to know if you have completed the series for the vaccines already taken?</span>**", unsafe_allow_html=True)
             show_completion = st.radio("", ["Yes", "No"], index=1)
