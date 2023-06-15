@@ -132,4 +132,4 @@ if age > 0:
     else:
         st.write("You did not select any vaccines. Please try again.")
 else:
-    st.markdown("**You have to enter your age!**")
+    st.markdown(" ")
