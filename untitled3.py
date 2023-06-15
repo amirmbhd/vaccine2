@@ -78,7 +78,7 @@ if age > 0:
             df.sort_values("Status", ascending=False, inplace=True)  # Sort by status with "Pending" on top
 
             st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
-            st.table(df.style.hide_index().set_properties(**{'text-align': 'center'}))
+            st.table(df.style.set_properties(**{'text-align': 'center'}).hide_index().apply(lambda _: '', axis=1))
 
             st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
             for vaccine in vaccines_not_taken:
