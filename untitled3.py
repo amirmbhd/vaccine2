@@ -26,7 +26,11 @@ years_options = list(range(19))  # 0 to 18
 
 st.title("Vaccine Recommendation Program")
 
-st.markdown("Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**")
+st.markdown(
+    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. "
+    "You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. "
+    "**Enter the information in the sidebar to get started.**"
+)
 
 st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
@@ -75,10 +79,10 @@ if age > 0:
 
             # Create the DataFrame
             df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
-            df.sort_values("Status", ascending=False, inplace=True)  # Sort by status with "Pending" on top
+            df = df.sort_values("Status", ascending=False).reset_index(drop=True)  # Sort by status with "Pending" on top
 
             st.markdown("**<span style='color:#708090'>You are eligible for the following vaccines:</span>**", unsafe_allow_html=True)
-            st.table(df.style.set_properties(**{'text-align': 'center'}).hide_index().apply(lambda _: '', axis=1))
+            st.table(df.style.set_properties(**{'text-align': 'center'}))
 
             st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
             for vaccine in vaccines_not_taken:
