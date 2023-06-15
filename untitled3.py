@@ -78,7 +78,7 @@ if age > 0:
             df = df.sort_values(by="Status", ascending=False)
 
             # Display the table
-            st.table(df.style.hide_index().set_properties(**{'text-align': 'center'}))
+            st.table(df.style.hide().set_properties(**{'text-align': 'center'}))
 
             st.markdown("**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**", unsafe_allow_html=True)
             for vaccine in vaccines_not_taken:
