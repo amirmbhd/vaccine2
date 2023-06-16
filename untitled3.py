@@ -93,12 +93,12 @@ if age > 0:
         df = df.sort_values(by="Status", ascending=False)
 
         # Define the style function
-        def color_rows(val):
-            color = 'green' if val == 'Completed' else 'red'
-            return f'background-color: {color}'
+        def color_rows(row):
+            color = 'green' if row.Status == 'Completed' else 'red'
+            return [f'color: {color}' for _ in row]
 
         # Apply the style
-        df_styled = df.style.hide().set_properties(**{"text-align": "center"}).applymap(color_rows, subset=['Status']).\
+        df_styled = df.style.hide().set_properties(**{"text-align": "center"}).apply(color_rows, axis=1).\
             set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}])
 
         # Display the table
