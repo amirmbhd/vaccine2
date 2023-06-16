@@ -70,10 +70,8 @@ if age > 0:
         eligible_vaccines[f"Meningococcal: {closest_vaccine}"] = vaccines[closest_vaccine]
         meningococcal_note = True
 
-    # Sidebar for already taken vaccines
     st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
+        "**Please select the vaccines you have already taken (You can select multiple):**"
     )
     vaccine_selection = st.sidebar.multiselect(
         "", list(eligible_vaccines.keys()) + ["None"]
@@ -95,26 +93,20 @@ if age > 0:
         df = df.sort_values(by="Status", ascending=False)
 
         # Display the table
-        st.table(df.style.set_properties(**{"text-align": "center"}).\
-            set_table_styles([{'selector': 'th', 'props': [('font-weight', 'bold')]}]))
+        st.table(df.style.hide_index().set_properties(**{"text-align": "center"}).\
+            set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}]))
 
-        st.markdown(
-            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
-            unsafe_allow_html=True,
-        )
+        st.markdown("**The timeline for your remaining vaccines:**")
         for vaccine in vaccines_not_taken:
-            st.markdown(
-                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
-            )
+            st.markdown(f"**{vaccine}:**")
             for dose, time in eligible_vaccines[vaccine]["timeline"].items():
                 st.write(f"{dose}: {time}")
             if vaccine.startswith("Meningococcal:") and meningococcal_note:
                 st.markdown(
-                    "<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>",
-                    unsafe_allow_html=True,
+                    "(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)"
                 )
 
-        st.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+        st.markdown("**Check vaccine series completion:**")
         for vaccine in vaccine_selection:
             vaccine_key = vaccine.strip()
             doses_taken = st.number_input(
@@ -132,4 +124,4 @@ if age > 0:
     else:
         st.write("You did not select any vaccines. Please try again.")
 else:
-    st.markdown(" ")
+    st.markdown("**You have to enter your age!**")
