@@ -139,7 +139,7 @@ if age > 0:
             tbody th {display:none}
             </style>
             """
-
+    st.markdown(df.style.set_table_styles(styles).to_html(),unsafe_allow_html=True)
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
