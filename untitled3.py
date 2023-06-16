@@ -41,67 +41,95 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
-# Sidebar for already taken vaccines
-st.sidebar.markdown(
-    "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-    unsafe_allow_html=True,
-)
-vaccine_selection = st.sidebar.multiselect(
-    "", list(vaccines.keys()) + ["None"]
-)
-
 if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
+
+    # Special condition for similar vaccines
+    if (
+        "Pneumococcal conjugate (PCV13, PCV15, PPSV23)" in eligible_vaccines
+        and "Pneumococcal conjugate (PCV13, PCV15)" in eligible_vaccines
+    ):
+        eligible_vaccines.pop("Pneumococcal conjugate (PCV13, PCV15)")
+
+    # Special condition for interchangeable vaccines
+    interchangeable_vaccines = [
+        "Meningococcal ACWY-D",
+        "Meningococcal ACWY-CRM",
+        "Meningococcal ACWY-TT",
+        "Meningococcal B",
+    ]
+    interchangeable_vaccines_eligible = [
+        vaccine for vaccine in interchangeable_vaccines if vaccine in eligible_vaccines
+    ]
+    meningococcal_note = False
+    if len(interchangeable_vaccines_eligible) > 1:
+        # Replace all the interchangeable vaccines with "Meningococcal"
+        for vaccine in interchangeable_vaccines_eligible:
+            eligible_vaccines.pop(vaccine)
+        closest_vaccine = min(
+            interchangeable_vaccines_eligible,
+            key=lambda vaccine: abs(min(vaccines[vaccine]["ages"]) - age),
+        )
+        eligible_vaccines[f"Meningococcal: {closest_vaccine}"] = vaccines[closest_vaccine]
+        meningococcal_note = True
+
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
 
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection
     ]
 
-    # Define the data for the table of taken vaccines
-    data_taken = []
+    # Define the data for the table
+    data = []
     for vaccine, info in eligible_vaccines.items():
-        if vaccine in vaccine_selection:
-            status = "Completed"
-            data_taken.append([vaccine, info["doses"], status])
+        status = "Completed" if vaccine in vaccine_selection else "Pending"
+        data.append([vaccine, info["doses"], status])
 
-    # Define the data for the table of not taken vaccines
-    data_not_taken = []
-    for vaccine in vaccines_not_taken:
-        timeline_info = ', '.join([f"{k}: {v}" for k, v in vaccines[vaccine]['timeline'].items()])
-        data_not_taken.append([vaccine, vaccines[vaccine]["doses"], timeline_info])
+    # Create the DataFrame
+    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
+    df = df.sort_values(by="Status", ascending=False)
+    df = df.reset_index(drop=True)
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    # Create the DataFrame for taken vaccines
-    df_taken = pd.DataFrame(data_taken, columns=["Vaccine Name", "Total Doses", "Status"])
-    df_taken = df_taken.sort_values(by="Status", ascending=False)
-    df_taken = df_taken.reset_index(drop=True)
-    st.markdown("**Vaccines Status:**")
-    st.table(df_taken.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
-    # Create the DataFrame for not taken vaccines
-    df_not_taken = pd.DataFrame(data_not_taken, columns=["Vaccine Name", "Total Doses", "Timeline"])
-    df_not_taken = df_not_taken.reset_index(drop=True)
-    st.markdown("**Timeline for Remaining Vaccines:**")
-    st.table(df_not_taken.style.set_properties(**{'text-align': 'center'}))
-
-# Remaining sidebar elements
-st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
-for vaccine in vaccine_selection:
-    vaccine_key = vaccine.strip()
-    show_completion = st.sidebar.radio(
-        f"Do you want to check if you have completed the series for {vaccine_key}?",
-        ["No", "Yes"],
-        index=0,
+    st.markdown(
+        "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+        unsafe_allow_html=True,
     )
-    if show_completion == "Yes":
-        doses_taken = st.sidebar.number_input(
-            f"How many doses of {vaccine_key} have you taken?",
-            min_value=0,
-            value=0,
+    for vaccine in vaccines_not_taken:
+        st.markdown(
+            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
         )
-        if doses_taken > 0:
-            doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
-            if doses_needed > 0:
-                st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
-            else:
-                st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
+        timeline_data = []
+        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+            timeline_data.append([dose, time])
+        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+        st.table(timeline_df)
+
+    st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+    for vaccine in vaccine_selection:
+        vaccine_key = vaccine.strip()
+        show_completion = st.sidebar.radio(
+            f"Do you want to check if you have completed the series for {vaccine_key}?",
+            ["No", "Yes"],
+            index=0,
+        )
+        if show_completion == "Yes":
+            doses_taken = st.sidebar.number_input(
+                f"How many doses of {vaccine_key} have you taken?",
+                min_value=0,
+                value=0,
+            )
+            if doses_taken > 0:
+                doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                if doses_needed > 0:
+                    st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                else:
+                    st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
