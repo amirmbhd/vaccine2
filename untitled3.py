@@ -127,8 +127,7 @@ if age > 0:
             else:
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
-    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
+    
     st.markdown(
         "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
         unsafe_allow_html=True,
@@ -139,9 +138,10 @@ if age > 0:
             tbody th {display:none}
             </style>
             """
-    st.markdown(df.style.set_table_styles(styles).to_html(),unsafe_allow_html=True)
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
+    
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     for vaccine in vaccines_not_taken:
         st.markdown(
