@@ -5,7 +5,7 @@ def color_rows(row):
     if row['Status'] == 'Completed':
         color = 'green'
     elif row['Status'] == 'In Progress':
-        color = 'yellow'
+        color = 'orange'
     else: # Status is 'Pending'
         color = 'red'
     return ['color: %s' % color]*len(row.values)
