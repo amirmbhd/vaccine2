@@ -92,9 +92,17 @@ if age > 0:
         df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
         df = df.sort_values(by="Status", ascending=False)
 
-        # Display the table 
-        st.table(df.style.hide().set_properties(**{"text-align": "center"}).\
-            set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}]))
+        # Define the style function
+        def color_rows(val):
+            color = 'green' if val == 'Completed' else 'red'
+            return f'background-color: {color}'
+
+        # Apply the style
+        df_styled = df.style.hide_index().set_properties(**{"text-align": "center"}).applymap(color_rows, subset=['Status']).\
+            set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}])
+
+        # Display the table
+        st.table(df_styled)
 
         st.markdown("**The timeline for your remaining vaccines:**")
         for vaccine in vaccines_not_taken:
@@ -106,10 +114,10 @@ if age > 0:
                     "(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)"
                 )
 
-        st.markdown("**Check vaccine series completion:**")
+        st.sidebar.markdown("**Check vaccine series completion:**")
         for vaccine in vaccine_selection:
             vaccine_key = vaccine.strip()
-            doses_taken = st.number_input(
+            doses_taken = st.sidebar.number_input(
                 f"How many doses of {vaccine_key} have you taken?",
                 min_value=0,
                 value=0,
@@ -117,9 +125,9 @@ if age > 0:
             if doses_taken > 0:
                 doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
                 if doses_needed > 0:
-                    st.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                    st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
                 else:
-                    st.write(f"You have completed the required doses for {vaccine_key}.")
+                    st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
 
     else:
         st.write("You did not select any vaccines. Please try again.")
