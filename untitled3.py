@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 
+def color_rows(row):
+    color = 'green' if row['Status'] == 'Completed' else 'red'
+    return ['color: %s' % color]*len(row.values)
+
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
 
@@ -79,6 +83,10 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
+    vaccines_not_taken = [
+        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection
+    ]
+
     # Define the data for the table
     data = []
     for vaccine, info in eligible_vaccines.items():
@@ -88,33 +96,23 @@ if age > 0:
     # Create the DataFrame
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
     df = df.sort_values(by="Status", ascending=False)
+    df = df.reset_index(drop=True)
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    # Display the table
-    df_styled = df.style.hide().set_properties(**{"text-align": "center"}).apply(color_rows, axis=1).\
-                set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}])
-    st.table(df_styled)
-
-    # The timeline for your remaining vaccines:
     st.markdown(
         "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
         unsafe_allow_html=True,
     )
-    vaccines_not_taken = [
-        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection
-    ]
     for vaccine in vaccines_not_taken:
-        vaccine_timeline = eligible_vaccines[vaccine]["timeline"]
-        vaccine_timeline_df = pd.DataFrame(vaccine_timeline.items(), columns=["Dose", "Timeline"])
-        st.table(vaccine_timeline_df.style.hide_index().set_properties(**{"text-align": "center"}).\
-                 set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}]))
+        st.markdown(
+            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+        )
+        timeline_data = []
+        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+            timeline_data.append([dose, time])
+        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+        st.table(timeline_df)
 
-        if vaccine.startswith("Meningococcal:") and meningococcal_note:
-            st.markdown(
-                "<span style='color:#708090'>(Note: You are eligible for multiple types of Meningococcal vaccines. The timeline displayed is specific to the type closest to your age, but you may be eligible for others with different schedules.)</span>",
-                unsafe_allow_html=True,
-            )
-
-    # Check vaccine series completion
     st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
     for vaccine in vaccine_selection:
         vaccine_key = vaccine.strip()
@@ -135,5 +133,3 @@ if age > 0:
                     st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
                 else:
                     st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
-else:
-    st.write(" ")
