@@ -91,27 +91,17 @@ if age > 0:
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
-        data.append([vaccine, info["doses"], status])
+        if vaccine in vaccines_not_taken:
+            timeline_info = ' '.join([f"{dose}: {time}" for dose, time in info['timeline'].items()])
+        else:
+            timeline_info = 'N/A'
+        data.append([vaccine, info["doses"], status, timeline_info])
 
     # Create the DataFrame
-    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
+    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Timeline"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
-    st.markdown(
-        "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
-        unsafe_allow_html=True,
-    )
-    for vaccine in vaccines_not_taken:
-        st.markdown(
-            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
-        )
-        timeline_data = []
-        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
-            timeline_data.append([dose, time])
-        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
-        st.table(timeline_df)
 
     st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
     for vaccine in vaccine_selection:
