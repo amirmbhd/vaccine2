@@ -98,7 +98,7 @@ if age > 0:
             return f'background-color: {color}'
 
         # Apply the style
-        df_styled = df.style.hide_index().set_properties(**{"text-align": "center"}).applymap(color_rows, subset=['Status']).\
+        df_styled = df.style.hide().set_properties(**{"text-align": "center"}).applymap(color_rows, subset=['Status']).\
             set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}])
 
         # Display the table
