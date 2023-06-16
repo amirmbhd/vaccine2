@@ -41,18 +41,18 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
+# Sidebar for already taken vaccines
+st.sidebar.markdown(
+    "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+    unsafe_allow_html=True,
+)
+vaccine_selection = st.sidebar.multiselect(
+    "", list(vaccines.keys()) + ["None"]
+)
+
 if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
-
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
 
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection
@@ -68,7 +68,7 @@ if age > 0:
     # Define the data for the table of not taken vaccines
     data_not_taken = []
     for vaccine in vaccines_not_taken:
-        timeline_info = ' '.join([f"{dose}: {time}" for dose, time in vaccines[vaccine]['timeline'].items()])
+        timeline_info = ', '.join([f"{k}: {v}" for k, v in vaccines[vaccine]['timeline'].items()])
         data_not_taken.append([vaccine, vaccines[vaccine]["doses"], timeline_info])
 
     # Create the DataFrame for taken vaccines
