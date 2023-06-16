@@ -131,7 +131,10 @@ if age > 0:
     st.markdown(
         "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
         unsafe_allow_html=True,
-    )
+    )    
+
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
     hide_table_row_index = """
             <style>
             thead tr th:first-child {display:none}
@@ -141,8 +144,6 @@ if age > 0:
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     
-    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
     for vaccine in vaccines_not_taken:
         st.markdown(
             f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
