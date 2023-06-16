@@ -127,12 +127,6 @@ if age > 0:
             else:
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
-    
-    st.markdown(
-        "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
-        unsafe_allow_html=True,
-    )    
-
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
     
     hide_table_row_index = """
@@ -144,12 +138,17 @@ if age > 0:
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     
-    for vaccine in vaccines_not_taken:
+    if len(vaccines_not_taken) > 0:
         st.markdown(
-            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+            unsafe_allow_html=True,
         )
-        timeline_data = []
-        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
-            timeline_data.append([dose, time])
-        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
-        st.table(timeline_df)
+        for vaccine in vaccines_not_taken:
+            st.markdown(
+                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+            )
+            timeline_data = []
+            for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+                timeline_data.append([dose, time])
+            timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+            st.table(timeline_df)
