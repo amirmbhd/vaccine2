@@ -3,11 +3,12 @@ import pandas as pd
 
 def color_rows(row):
     if row['Status'] == 'Completed':
-        return ['color: green']*len(row.values)
-    elif row['Status'] == 'In progress':
-        return ['color: yellow']*len(row.values)
-    else:
-        return ['color: red']*len(row.values)
+        color = 'green'
+    elif row['Status'] == 'In Progress':
+        color = 'yellow'
+    else: # Status is 'Pending'
+        color = 'red'
+    return ['color: %s' % color]*len(row.values)
 
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
@@ -49,6 +50,35 @@ if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
+    # Special condition for similar vaccines
+    if (
+        "Pneumococcal conjugate (PCV13, PCV15, PPSV23)" in eligible_vaccines
+        and "Pneumococcal conjugate (PCV13, PCV15)" in eligible_vaccines
+    ):
+        eligible_vaccines.pop("Pneumococcal conjugate (PCV13, PCV15)")
+
+    # Special condition for interchangeable vaccines
+    interchangeable_vaccines = [
+        "Meningococcal ACWY-D",
+        "Meningococcal ACWY-CRM",
+        "Meningococcal ACWY-TT",
+        "Meningococcal B",
+    ]
+    interchangeable_vaccines_eligible = [
+        vaccine for vaccine in interchangeable_vaccines if vaccine in eligible_vaccines
+    ]
+    meningococcal_note = False
+    if len(interchangeable_vaccines_eligible) > 1:
+        # Replace all the interchangeable vaccines with "Meningococcal"
+        for vaccine in interchangeable_vaccines_eligible:
+            eligible_vaccines.pop(vaccine)
+        closest_vaccine = min(
+            interchangeable_vaccines_eligible,
+            key=lambda vaccine: abs(min(vaccines[vaccine]["ages"]) - age),
+        )
+        eligible_vaccines[f"Meningococcal: {closest_vaccine}"] = vaccines[closest_vaccine]
+        meningococcal_note = True
+
     # Sidebar for already taken vaccines
     st.sidebar.markdown(
         "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
@@ -73,20 +103,42 @@ if age > 0:
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
 
-    st.checkbox("Use container width for the table", value=False, key="use_container_width_table")
-    st.dataframe(df.style.apply(color_rows, axis=1), use_container_width=st.session_state.use_container_width_table)
+    st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+    for vaccine in vaccine_selection:
+        vaccine_key = vaccine.strip()
+        show_completion = st.sidebar.radio(
+            f"Do you want to check if you have completed the series for {vaccine_key}?",
+            ["No", "Yes"],
+            index=0,
+        )
+        if show_completion == "Yes":
+            doses_taken = st.sidebar.number_input(
+                f"How many doses of {vaccine_key} have you taken?",
+                min_value=1,
+                value=1,
+            )
+            if doses_taken > 0:
+                doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                if doses_needed > 0:
+                    st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                    df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
+                else:
+                    st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
+            else:
+                df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
-    check_vaccine_completion = st.sidebar.checkbox("Check vaccine series completion")
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    if check_vaccine_completion:
-        selected_vaccine = st.sidebar.selectbox("Select a vaccine:", vaccine_selection)
-        doses_taken = st.sidebar.slider("Number of doses taken:", 0, vaccines[selected_vaccine]['doses'])
-
-        if doses_taken == 0:
-            df.loc[df['Vaccine Name'] == selected_vaccine, 'Status'] = 'Pending'
-        elif doses_taken < vaccines[selected_vaccine]['doses']:
-            df.loc[df['Vaccine Name'] == selected_vaccine, 'Status'] = 'In progress'
-        else:
-            df.loc[df['Vaccine Name'] == selected_vaccine, 'Status'] = 'Completed'
-
-        st.dataframe(df.style.apply(color_rows, axis=1), use_container_width=st.session_state.use_container_width_table)
+    st.markdown(
+        "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+        unsafe_allow_html=True,
+    )
+    for vaccine in vaccines_not_taken:
+        st.markdown(
+            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+        )
+        timeline_data = []
+        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+            timeline_data.append([dose, time])
+        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+        st.table(timeline_df)
