@@ -133,6 +133,16 @@ if age > 0:
         "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
         unsafe_allow_html=True,
     )
+    hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
+
     for vaccine in vaccines_not_taken:
         st.markdown(
             f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
