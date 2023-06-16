@@ -92,8 +92,8 @@ if age > 0:
         df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
         df = df.sort_values(by="Status", ascending=False)
 
-        # Display the table
-        st.table(df.style.hide_index().set_properties(**{"text-align": "center"}).\
+        # Display the table 
+        st.table(df.style.hide().set_properties(**{"text-align": "center"}).\
             set_table_styles([{'selector': 'th', 'props': [('text-align', 'center'), ('font-weight', 'bold')]}]))
 
         st.markdown("**The timeline for your remaining vaccines:**")
