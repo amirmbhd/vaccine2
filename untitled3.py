@@ -34,13 +34,29 @@ age = (age_month * 30) + (age_year * 365)
 
 if age > 0:
     vaccine_df = read_vaccine_info(age_year)
-
-    # Convert the DataFrame to a dictionary
-    vaccines = {}
+    vaccines = {}  # Convert the DataFrame to a dictionary
     for _, row in vaccine_df.iterrows():
-        # ... the rest of the code for reading the vaccines is the same ...
+        vaccines[row['Vaccine Name']] = {
+            'doses': row['Doses'],
+            'timeline': {f'Dose {i+1}': row[f'Dose {i+1}'] for i in range(row['Doses'])},
+            'age_range': (row['Start Age'], row['End Age']),
+        }
+    
+    st.sidebar.markdown("**Enter the vaccines you have taken (use commas to separate multiple vaccines):**")
+    vaccine_input = st.sidebar.text_input("", value="", max_chars=None, key=None, type='default')
+    vaccine_input = vaccine_input.lower().split(',')
+    vaccine_selection = [name.strip().capitalize() for name in vaccine_input if name.strip() != '']
 
-    st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+    # Vaccine eligibility table
+    df = pd.DataFrame(columns=["Vaccine Name", "Status"])
+    df["Vaccine Name"] = list(vaccines.keys())
+    df["Status"] = "Pending"
+
+    for vaccine in vaccine_selection:
+        if vaccine in df["Vaccine Name"].values:
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = 'Completed'
+    
+    st.sidebar.markdown("**Check vaccine series completion:**")
     for vaccine in vaccine_selection:
         vaccine_key = vaccine.strip()
 
@@ -54,7 +70,7 @@ if age > 0:
                 st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Completed'
             else:
-                st.sidebar.write(f"You need 1 more dose of {vaccine_key}.")
+                st.sidebar.write(f"You need 1 more dose of {vaccine_key} to complete the series.")
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
         elif vaccine_key == 'Tdap' and age_year >= 19:
             tdap_done = st.sidebar.radio(
@@ -66,9 +82,9 @@ if age > 0:
                 st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Completed'
             else:
-                st.sidebar.write(f"You need 1 more dose of {vaccine_key} to complete the series for the next 10 years.")
+                st.sidebar.write(f"You need 1 more dose of {vaccine_key} to complete the series.")
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
-        else:
+        elif vaccine_key in vaccines:
             show_completion = st.sidebar.radio(
                 f"Do you want to check if you have completed the series for {vaccine_key}?",
                 ["No", "Yes"],
@@ -87,9 +103,10 @@ if age > 0:
                         df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
                     else:
                         st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
+                        df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Completed'
                 else:
                     df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
-        
+    
     if vaccines_not_taken:
         st.markdown(
             "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
