@@ -10,8 +10,24 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
+st.title("Vaccine Recommendation Program")
+
+st.markdown(
+    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
+)
+
+st.sidebar.markdown("**Please enter your age:**")
+age_year = st.sidebar.number_input("Years:", min_value=0, max_value=999, value=0)
+age_month = st.sidebar.selectbox("Months:", list(range(13)))  # 0 to 12
+
+# Calculate the age in days
+age = (age_month * 30) + (age_year * 365)
+
+# Decide the name of the Excel file based on the age
+excel_file_name = "adultvaccines3.xlsx" if age_year >= 19 else "vaccines3.xlsx"
+
 # Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel("vaccines3.xlsx")
+vaccine_df = pd.read_excel(excel_file_name)
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
@@ -28,23 +44,6 @@ for _, row in vaccine_df.iterrows():
             doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
     vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline}
-
-# Define the months and years options
-months_options = list(range(13))  # 0 to 12
-years_options = list(range(19))  # 0 to 18
-
-st.title("Vaccine Recommendation Program")
-
-st.markdown(
-    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
-)
-
-st.sidebar.markdown("**Please enter your age:**")
-age_month = st.sidebar.selectbox("Months:", months_options)
-age_year = st.sidebar.selectbox("Years:", years_options)
-
-# Calculate the age in days
-age = (age_month * 30) + (age_year * 365)
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -127,8 +126,15 @@ if age > 0:
             else:
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
+    # The timeline for your remaining vaccines:
+    if vaccines_not_taken:
+        st.markdown(
+            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+            unsafe_allow_html=True,
+        )
+
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    
+
     hide_table_row_index = """
             <style>
             thead tr th:first-child {display:none}
@@ -137,18 +143,19 @@ if age > 0:
             """
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
-    
-    if len(vaccines_not_taken) > 0:
+
+    for vaccine in vaccines_not_taken:
         st.markdown(
-            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+        )
+        timeline_data = []
+        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+            timeline_data.append([dose, time])
+        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Timeline"])
+        st.table(timeline_df.set_index('Dose'))
+
+    if meningococcal_note:
+        st.markdown(
+            "**<span style='color:red'>Note:</span>** Different types of Meningococcal vaccines are interchangeable. The closest one to your age has been recommended.",
             unsafe_allow_html=True,
         )
-        for vaccine in vaccines_not_taken:
-            st.markdown(
-                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
-            )
-            timeline_data = []
-            for dose, time in eligible_vaccines[vaccine]["timeline"].items():
-                timeline_data.append([dose, time])
-            timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
-            st.table(timeline_df)
