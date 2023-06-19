@@ -30,10 +30,10 @@ if age > 0:
     # Create the dictionary 'vaccines'
     vaccines = {}
     for _, row in vaccine_df.iterrows():
-        vaccines[row['Vaccine Name']] = {
-            '# of doses': row['# of doses'],
-            'timeline': {f'Dose {i+1}': row[f'Dose {i+1}'] for i in range(row['# of doses'])},
-            'age_range': (row['Start Age'], row['End Age']),
+        vaccines[row['Vaccine']] = {
+            'Doses': row['Doses'],
+            'timeline': {f'Dose {i+1}': row[f'Dose {i+1}'] for i in range(row['Doses'])},
+            'age_range': (row['Minimum Age'], row['Maximum Age']),
         }
 
     eligible_vaccines = {k: v for k, v in vaccines.items() if v['age_range'][0]*365 <= age <= v['age_range'][1]*365}
@@ -59,13 +59,14 @@ if age > 0:
                 if show_completion == "Yes":
                     doses_taken = st.sidebar.number_input(f"How many doses of {vaccine} have you taken?", min_value=1, value=1)
                     if doses_taken > 0:
-                        doses_needed = vaccines[vaccine]['# of doses'] - doses_taken
+                        doses_needed = vaccines[vaccine]['Doses'] - doses_taken
                         if doses_needed > 0:
                             st.sidebar.write(f"You need to take {doses_needed} more dose(s) of {vaccine} to complete the series.")
                         else:
                             st.sidebar.write(f"You have completed your series for {vaccine}.")
-        # Add table
-        eligible_vaccines_df = pd.DataFrame(eligible_vaccines).transpose()
-        eligible_vaccines_df.drop(['timeline', 'age_range'], axis=1, inplace=True)
-        eligible_vaccines_df['Status'] = eligible_vaccines_df.apply(lambda row: 'Completed' if row.name in vaccine_selection else 'Pending', axis=1)
-        st.dataframe(eligible_vaccines_df.style.apply(color_rows, axis=1))
+
+    # Add table
+    eligible_vaccines_df = pd.DataFrame(eligible_vaccines).transpose()
+    eligible_vaccines_df.drop(['timeline', 'age_range'], axis=1, inplace=True)
+    eligible_vaccines_df['Status'] = eligible_vaccines_df.apply(lambda row: 'Completed' if row.name in vaccine_selection else 'Pending', axis=1)
+    st.dataframe(eligible_vaccines_df.style.apply(color_rows, axis=1))
