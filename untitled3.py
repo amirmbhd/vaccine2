@@ -10,7 +10,6 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
-# Read the vaccine information from the Excel file
 def read_vaccine_info(age_year):
     if age_year >= 19:
         vaccine_df = pd.read_excel("adultvaccines3.xlsx")
@@ -18,7 +17,6 @@ def read_vaccine_info(age_year):
         vaccine_df = pd.read_excel("vaccines3.xlsx")
     return vaccine_df
 
-# Define the months and years options
 months_options = list(range(13))  # 0 to 12
 years_options = list(range(1000))  # 0 to 999
 
@@ -32,7 +30,6 @@ st.sidebar.markdown("**Please enter your age:**")
 age_year = st.sidebar.number_input("Years:", min_value=0, max_value=999, value=0, step=1)
 age_month = st.sidebar.selectbox("Months:", months_options)
 
-# Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
 if age > 0:
@@ -41,7 +38,7 @@ if age > 0:
     # Convert the DataFrame to a dictionary
     vaccines = {}
     for _, row in vaccine_df.iterrows():
-        # ... the rest of the code is the same as before ...
+        # ... the rest of the code for reading the vaccines is the same ...
 
     st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
     for vaccine in vaccine_selection:
@@ -78,5 +75,44 @@ if age > 0:
                 index=0,
             )
             if show_completion == "Yes":
-                # ... the rest of the code is the same as before ...
+                doses_taken = st.sidebar.number_input(
+                    f"How many doses of {vaccine_key} have you taken?",
+                    min_value=1,
+                    value=1,
+                )
+                if doses_taken > 0:
+                    doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                    if doses_needed > 0:
+                        st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                        df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
+                    else:
+                        st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
+                else:
+                    df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
+        
+    if vaccines_not_taken:
+        st.markdown(
+            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
+            unsafe_allow_html=True,
+        )
 
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
+    hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
+    
+    for vaccine in vaccines_not_taken:
+        st.markdown(
+            f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+        )
+        timeline_data = []
+        for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+            timeline_data.append([dose, time])
+        timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+        st.table(timeline_df)
