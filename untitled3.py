@@ -10,23 +10,8 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
-st.title("Vaccine Recommendation Program")
-
-st.markdown(
-    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
-)
-
-st.sidebar.markdown("**Please enter your age in years:**")
-age_year = st.sidebar.number_input("Years:", min_value=0, max_value=999, value=0)
-
-# Calculate the age in days
-age = age_year * 365
-
-# Define the Excel file name based on the age
-file_name = "vaccines3.xlsx" if age_year < 19 else "adultvaccines3.xlsx"
-
 # Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel(file_name)
+vaccine_df = pd.read_excel("vaccines3.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
@@ -43,6 +28,23 @@ for _, row in vaccine_df.iterrows():
             doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
     vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline}
+
+# Define the months and years options
+months_options = list(range(13))  # 0 to 12
+years_options = list(range(19))  # 0 to 18
+
+st.title("Vaccine Recommendation Program")
+
+st.markdown(
+    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
+)
+
+st.sidebar.markdown("**Please enter your age:**")
+age_month = st.sidebar.selectbox("Months:", months_options)
+age_year = st.sidebar.selectbox("Years:", years_options)
+
+# Calculate the age in days
+age = (age_month * 30) + (age_year * 365)
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -125,23 +127,22 @@ if age > 0:
             else:
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
-    # Only show the title if there are remaining vaccines
-    if vaccines_not_taken:
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
+    hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
+    
+    if len(vaccines_not_taken) > 0:
         st.markdown(
             "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
             unsafe_allow_html=True,
         )
-        st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-        
-        hide_table_row_index = """
-                <style>
-                thead tr th:first-child {display:none}
-                tbody th {display:none}
-                </style>
-                """
-        # Inject CSS with Markdown
-        st.markdown(hide_table_row_index, unsafe_allow_html=True)
-        
         for vaccine in vaccines_not_taken:
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
@@ -151,21 +152,3 @@ if age > 0:
                 timeline_data.append([dose, time])
             timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
             st.table(timeline_df)
-    else:
-        st.markdown(
-            "**<span style='color:#708090'>You have completed all vaccines:</span>**",
-            unsafe_allow_html=True,
-        )
-        st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
-    # If the meningococcal note is necessary, display it
-    if meningococcal_note:
-        st.markdown(
-            "*Meningococcal vaccines are interchangeable. The recommended vaccine has been selected based on your age.",
-            unsafe_allow_html=True,
-        )
-else:
-    st.markdown(
-        "**<span style='color:#708090'>Please enter your age to view the vaccine recommendations.</span>**",
-        unsafe_allow_html=True,
-    )
