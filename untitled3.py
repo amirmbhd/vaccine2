@@ -31,8 +31,8 @@ if age > 0:
     vaccines = {}
     for _, row in vaccine_df.iterrows():
         vaccines[row['Vaccine']] = {
-            'Doses': row['Doses'],
-            'timeline': {f'Dose {i+1}': row[f'Dose {i+1}'] for i in range(row['Doses'])},
+            '# of Doses': row['# of Doses'],
+            'timeline': {f'Dose {i+1}': row[f'Dose {i+1}'] for i in range(row['# of Doses'])},
             'age_range': (row['Minimum Age'], row['Maximum Age']),
         }
 
@@ -59,13 +59,13 @@ if age > 0:
                 if show_completion == "Yes":
                     doses_taken = st.sidebar.number_input(f"How many doses of {vaccine} have you taken?", min_value=1, value=1)
                     if doses_taken > 0:
-                        doses_needed = vaccines[vaccine]['Doses'] - doses_taken
+                        doses_needed = vaccines[vaccine]['# of Doses'] - doses_taken
                         if doses_needed > 0:
                             st.sidebar.write(f"You need to take {doses_needed} more dose(s) of {vaccine} to complete the series.")
                         else:
-                            st.sidebar.write(f"You have completed your series for {vaccine}.")
+                            st.sidebar.write("You have completed your series for this vaccine.")
 
-    # Add table
+    st.header("The timeline for your remaining vaccines:")
     eligible_vaccines_df = pd.DataFrame(eligible_vaccines).transpose()
     eligible_vaccines_df.drop(['timeline', 'age_range'], axis=1, inplace=True)
     eligible_vaccines_df['Status'] = eligible_vaccines_df.apply(lambda row: 'Completed' if row.name in vaccine_selection else 'Pending', axis=1)
