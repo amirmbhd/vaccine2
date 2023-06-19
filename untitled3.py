@@ -31,7 +31,7 @@ if age > 0:
     vaccines = {}
     for _, row in vaccine_df.iterrows():
         vaccines[row['Vaccine']] = {
-            '# of Doses': row['# of Doses'],
+            '# of Doses': row['# of doses'],
             'timeline': {f'Dose {i+1}': row[f'Dose {i+1}'] for i in range(row['# of doses'])},
             'age_range': (row['Minimum Age'], row['Maximum Age']),
         }
