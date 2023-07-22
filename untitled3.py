@@ -10,6 +10,7 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
+vaccine_df = pd.read_excel("vaccinesfull.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
@@ -48,10 +49,8 @@ age = (age_month * 30) + (age_year * 365)
 
 if age_year < 18:
     sheet = "peds"
-    vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 else:
     sheet = "adults"
-    vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 
 # the rest of your code...
 
