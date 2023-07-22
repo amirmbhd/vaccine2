@@ -9,7 +9,13 @@ def color_rows(row):
     else: # Status is 'Pending'
         color = 'red'
     return ['color: %s' % color]*len(row.values)
-
+    
+age = (age_month * 30) + (age_year * 365)
+   
+if age_year >= 18:
+    vaccine_df = pd.read_excel("adultvaccines3.xlsx")
+else:
+    vaccine_df = pd.read_excel("vaccines3.xlsx")
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
 
@@ -43,8 +49,6 @@ st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
 
-# Calculate the age in days
-age = (age_month * 30) + (age_year * 365)
 
 if age > 0:
     # Determine which vaccines the user is eligible for
