@@ -10,14 +10,7 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
     
-age = (age_month * 30) + (age_year * 365)
-   
-if age_year >= 18:
-    vaccine_df = pd.read_excel("adultvaccines3.xlsx")
-else:
-    vaccine_df = pd.read_excel("vaccines3.xlsx")
-# Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel("vaccines3.xlsx")
+
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
@@ -49,6 +42,14 @@ st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
 
+age = (age_month * 30) + (age_year * 365)
+   
+if age_year >= 18:
+    vaccine_df = pd.read_excel("adultvaccines3.xlsx")
+else:
+    vaccine_df = pd.read_excel("vaccines3.xlsx")
+# Read the vaccine information from the Excel file
+vaccine_df = pd.read_excel("vaccines3.xlsx")
 
 if age > 0:
     # Determine which vaccines the user is eligible for
