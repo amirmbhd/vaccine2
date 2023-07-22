@@ -31,7 +31,7 @@ for _, row in vaccine_df.iterrows():
 
 # Define the months and years options
 months_options = list(range(13))  # 0 to 12
-years_options = list(range(19))  # 0 to 18
+years_options = list(range(120))  # 0 to 18
 
 st.title("Vaccine Recommendation Program")
 
@@ -45,6 +45,12 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
+
+if age_year < 18:
+    sheet = "peds"
+else:
+    sheet = "adults"
+
 
 if age > 0:
     # Determine which vaccines the user is eligible for
