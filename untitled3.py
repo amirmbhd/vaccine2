@@ -11,7 +11,7 @@ def color_rows(row):
     return ['color: %s' % color]*len(row.values)
 
 # Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel("vaccines3.xlsx")
+vaccine_df = pd.read_excel("vaccinesfull.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
