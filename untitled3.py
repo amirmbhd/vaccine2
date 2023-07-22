@@ -49,8 +49,7 @@ if age_year >= 18:
 else:
     vaccine_df = pd.read_excel("vaccines3.xlsx")
     
-# Read the vaccine information from the Excel file
-vaccine_df = pd.read_excel("vaccines3.xlsx")
+
 
 if age > 0:
     # Determine which vaccines the user is eligible for
