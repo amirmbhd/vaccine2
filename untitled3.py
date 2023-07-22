@@ -43,11 +43,12 @@ age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
 
 age = (age_month * 30) + (age_year * 365)
-   
+
 if age_year >= 18:
     vaccine_df = pd.read_excel("adultvaccines3.xlsx")
 else:
     vaccine_df = pd.read_excel("vaccines3.xlsx")
+    
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccines3.xlsx")
 
