@@ -48,10 +48,10 @@ age = (age_month * 30) + (age_year * 365)
 
 # Read the vaccine information from the Excel file
 if age_year < 18:
-    sheet = "peds"
+    sheet = "adults"
     vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 else:
-    sheet = "adults"
+    sheet = "peds"
     vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 
 # the rest of your code...
