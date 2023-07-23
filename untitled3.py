@@ -10,7 +10,6 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
-vaccine_df = pd.read_excel("vaccinesfull.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
@@ -45,14 +44,13 @@ age_year = st.sidebar.selectbox("Years:", years_options)
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
-# Read the vaccine information from the Excel file
-
 if age_year < 18:
     sheet = "peds"
 else:
     sheet = "adults"
 
-# the rest of your code...
+# Read the vaccine information from the Excel file
+vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 
 if age > 0:
     # Determine which vaccines the user is eligible for
