@@ -150,7 +150,10 @@ if age > 0:
             "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
             unsafe_allow_html=True,
         )
-        for vaccine in vaccines_not_taken and 'Status' = 'In Progress':
+        for vaccine in vaccines_not_taken 
+        and
+        for vaccine, info in eligible_vaccines.items():
+        status = "Pending":
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
             )
