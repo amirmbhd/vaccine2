@@ -10,7 +10,7 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
-vaccine_df = pd.read_excel("vaccinesfull.xlsx")
+vaccine_df = pd.read_excel("adults11.xlsx")
 
 # Convert the DataFrame to a dictionary
 vaccines = {}
