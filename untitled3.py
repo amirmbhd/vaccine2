@@ -106,33 +106,36 @@ if age > 0:
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
 
-    st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
-    for vaccine in vaccine_selection:
-        vaccine_key = vaccine.strip()
-        show_completion = st.sidebar.radio(
-            f"Do you want to check if you have completed the series for {vaccine_key}?",
-            ["No", "Yes"],
-            index=0,
-        )
-        if show_completion == "Yes":
-            doses_taken = st.sidebar.number_input(
-                f"How many doses of {vaccine_key} have you taken?",
-                min_value=1,
-                value=1,
+    # Only show the vaccine series completion check if 'None' was not selected
+    if "None" not in vaccine_selection:
+        st.sidebar.markdown("**Check vaccine series completion:**", unsafe_allow_html=True)
+        for vaccine in vaccine_selection:
+            vaccine_key = vaccine.strip()
+            show_completion = st.sidebar.radio(
+                f"Do you want to check if you have completed the series for {vaccine_key}?",
+                ["No", "Yes"],
+                index=0,
             )
-            if doses_taken > 0:
-                doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
-                if doses_needed > 0:
-                    st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
-                    df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
+            if show_completion == "Yes":
+                doses_taken = st.sidebar.number_input(
+                    f"How many doses of {vaccine_key} have you taken?",
+                    min_value=1,
+                    value=1,
+                )
+                if doses_taken > 0:
+                    doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                    if doses_needed > 0:
+                        st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
+                        df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
+                    else:
+                        st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
                 else:
-                    st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
-            else:
-                df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
- # Fetch vaccines that are not taken or are in progress
+                    df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
+    # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
+
 
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
     
