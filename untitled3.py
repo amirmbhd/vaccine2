@@ -94,11 +94,6 @@ if age > 0:
     vaccine_selection = st.sidebar.multiselect(
         "", list(eligible_vaccines.keys()) + ["None"]
     )
-    # Fetch vaccines that are not taken or are in progress
-    vaccines_not_taken = [
-        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
-    ]
-
 
     # Define the data for the table
     data = []
@@ -134,6 +129,10 @@ if age > 0:
                     st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
             else:
                 df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
+ # Fetch vaccines that are not taken or are in progress
+    vaccines_not_taken = [
+        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
+    ]
 
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
     
