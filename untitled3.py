@@ -55,16 +55,31 @@ for _, row in vaccine_df.iterrows():
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
     vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "condition 1": condition_1, "condition 2": condition_2} # Added condition 1 and condition 2 to the dictionary
 
+# Initialize vaccine_selection as an empty list
+vaccine_selection = []
+
 if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
     # (Remaining part of the code...)
 
-    vaccines_not_taken = [
-        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
-    ]
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
 
+    # (Remaining part of the code...)
+
+vaccines_not_taken = [
+    vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
+]
+
+# (Remaining part of the code...)
 
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
