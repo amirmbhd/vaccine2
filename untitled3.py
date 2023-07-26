@@ -36,6 +36,7 @@ else:
 # Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 
+
 # Convert the DataFrame to a dictionary
 vaccines = {}
 for _, row in vaccine_df.iterrows():
@@ -44,23 +45,47 @@ for _, row in vaccine_df.iterrows():
     age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
     doses_info = {}
     timeline = {}
-    condition_1 = row.get("condition 1", "")  # Added condition 1
-    condition_2 = row.get("condition 2", "")  # Added condition 2
     for i in range(1, 6):  # Adjusted to include Dose 1 to Dose 5
         if row[f"Dose {i}"] != 'X':  # If the cell is not 'X'
             dose_min = row[f"Dose {i} Min"]
             dose_max = row[f"Dose {i} Max"]
             doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
-    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "condition 1": condition_1, "condition 2": condition_2}  # Added condition 1 and condition 2 to the dictionary
-
-# Initialize vaccine_selection as an empty list
-vaccine_selection = []
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline}
 
 if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
-    
+
+    # Special condition for similar vaccines
+    if (
+        "Pneumococcal conjugate (PCV13, PCV15, PPSV23)" in eligible_vaccines
+        and "Pneumococcal conjugate (PCV13, PCV15)" in eligible_vaccines
+    ):
+        eligible_vaccines.pop("Pneumococcal conjugate (PCV13, PCV15)")
+
+    # Special condition for interchangeable vaccines
+    interchangeable_vaccines = [
+        "Meningococcal ACWY-D",
+        "Meningococcal ACWY-CRM",
+        "Meningococcal ACWY-TT",
+        "Meningococcal B",
+    ]
+    interchangeable_vaccines_eligible = [
+        vaccine for vaccine in interchangeable_vaccines if vaccine in eligible_vaccines
+    ]
+    meningococcal_note = False
+    if len(interchangeable_vaccines_eligible) > 1:
+        # Replace all the interchangeable vaccines with "Meningococcal"
+        for vaccine in interchangeable_vaccines_eligible:
+            eligible_vaccines.pop(vaccine)
+        closest_vaccine = min(
+            interchangeable_vaccines_eligible,
+            key=lambda vaccine: abs(min(vaccines[vaccine]["ages"]) - age),
+        )
+        eligible_vaccines[f"Meningococcal: {closest_vaccine}"] = vaccines[closest_vaccine]
+        meningococcal_note = True
+
     # Sidebar for already taken vaccines
     st.sidebar.markdown(
         "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
@@ -69,7 +94,7 @@ if age > 0:
     vaccine_selection = st.sidebar.multiselect(
         "", list(eligible_vaccines.keys()) + ["None"]
     )
-    
+
     # Define the data for the table
     data = []
     for vaccine, info in eligible_vaccines.items():
@@ -106,20 +131,34 @@ if age > 0:
                         st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
                 else:
                     df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
-
+    # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
 
-    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
+    hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
+    
     if len(vaccines_not_taken) > 0:
         st.markdown(
-            "**<span style='color:#708090'>The timeline below shows when you should take each dose for the vaccines you have not taken yet:</span>**",
+            "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
             unsafe_allow_html=True,
         )
         for vaccine in vaccines_not_taken:
-            vaccine_info = vaccines[vaccine]  # Use 'vaccines' instead of 'eligible_vaccines'
-            st.write(f"**{vaccine}**")
-            for dose, time in vaccine_info["timeline"].items():
-                st.write(f"{dose}: {time} days")
+            st.markdown(
+                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+            )
+            timeline_data = []
+            for dose, time in eligible_vaccines[vaccine]["timeline"].items():
+                timeline_data.append([dose, time])
+            timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+            st.table(timeline_df)
