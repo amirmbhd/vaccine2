@@ -81,6 +81,7 @@ vaccines_not_taken = [
 
 # (Remaining part of the code...)
 
+
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     hide_table_row_index = """
