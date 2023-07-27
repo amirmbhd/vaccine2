@@ -138,6 +138,13 @@ if age > 0:
             timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
             st.table(timeline_df)
 
+
+            if len(condition_dosing_data) > 0:
+                st.markdown(
+                    f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**", unsafe_allow_html=True
+                )
+                condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
+                st.table(condition_dosing_df)
             # Check the condition and alternate dosing columns
             condition_columns = [f"condition {i+1}" for i in range(7)]
             dosing_columns = [f"Alternate dosing {i+1}" for i in range(7)]
@@ -146,11 +153,4 @@ if age > 0:
                 if pd.notna(row[condition_column]) and pd.notna(row[dosing_column]):
                     condition_dosing_data.append([row[condition_column], row[dosing_column]])
             
-            if len(condition_dosing_data) > 0:
-                st.markdown(
-                    f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**", unsafe_allow_html=True
-                )
-                condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
-                st.table(condition_dosing_df)
-
 st.write("<span style='color:black'>Please consult with a healthcare professional for more detailed and personal vaccine recommendations.</span>", unsafe_allow_html=True)
