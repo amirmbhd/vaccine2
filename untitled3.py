@@ -115,7 +115,6 @@ if age > 0:
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
-
     if len(vaccines_not_taken) > 0:
         st.markdown(
             "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
@@ -125,17 +124,14 @@ if age > 0:
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
             )
-# Display the Eligibility and Ineligibility info if they are not empty
+            # Display the Eligibility and Ineligibility info if they are not empty
             if eligible_vaccines[vaccine]["eligibility"]:
-                st.markdown(f"Eligibility: {eligible_vaccines[vaccine]['eligibility']}")
+                st.markdown(f"**<span style='color:green'>Eligibility:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
             if eligible_vaccines[vaccine]["ineligibility"]:
-                st.markdown(f"Ineligibility: {eligible_vaccines[vaccine]['ineligibility']}")
-
+                st.markdown(f"**<span style='color:red'>Ineligibility:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
             
             timeline_data = []
             for dose, time in eligible_vaccines[vaccine]["timeline"].items():
                 timeline_data.append([dose, time])
             timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
             st.table(timeline_df)
-
-            
