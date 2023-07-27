@@ -70,12 +70,10 @@ if age > 0:
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
-        eligibility = info["eligibility"] if status != "Completed" and info["eligibility"] != "" else ""
-        ineligibility = info["ineligibility"] if status != "Completed" and info["ineligibility"] != "" else ""
-        data.append([vaccine, info["doses"], status, eligibility, ineligibility])
+        data.append([vaccine, info["doses"], status])
 
     # Create the DataFrame
-    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Eligibility", "Ineligibility"])
+    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
 
@@ -132,3 +130,9 @@ if age > 0:
                 timeline_data.append([dose, time])
             timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
             st.table(timeline_df)
+
+            # Display the Eligibility and Ineligibility info if they are not empty
+            if eligible_vaccines[vaccine]["eligibility"]:
+                st.text(f"Eligibility: {eligible_vaccines[vaccine]['eligibility']}")
+            if eligible_vaccines[vaccine]["ineligibility"]:
+                st.text(f"Ineligibility: {eligible_vaccines[vaccine]['ineligibility']}")
