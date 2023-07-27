@@ -89,8 +89,9 @@ if age > 0:
     eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
     conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
 
-
-    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    # Display the table if the Normal Vaccine schedule checkbox is checked
+    if normal_schedule_check:
+        st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     hide_table_row_index = """
             <style>
@@ -136,28 +137,27 @@ if age > 0:
             unsafe_allow_html=True,
         )
         for vaccine in vaccines_not_taken:
-            if normal_schedule_check:
-                st.markdown(
-                    f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
-                )
-            # Display the Eligibility and Ineligibility info if they are not empty
+            st.markdown(
+                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+            )
+            # Display the Eligibility and Ineligibility info if the corresponding checkbox is checked
             if eligibility_criteria_check:
-
                 if eligible_vaccines[vaccine]["eligibility"]:
                     st.markdown(f"**<span style='color:green'>**You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
                 if eligible_vaccines[vaccine]["ineligibility"]:
                     st.markdown(f"**<span style='color:red'>**You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-                st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
+            st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
 
             condition_dosing_data = []
             for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
                 condition_dosing_data.append([condition, dosing])
-            
-            if len(condition_dosing_data) > 0:
-                if conditions_dosing_check and len(condition_dosing_data) > 0:
 
-                        st.markdown(
-                            f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**", unsafe_allow_html=True
-                        )
-                        condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
-                        st.table(condition_dosing_df)
+            # Display the conditions and alternate dosing table if the corresponding checkbox is checked
+            if conditions_dosing_check and len(condition_dosing_data) > 0:
+                st.markdown(
+                    f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**", unsafe_allow_html=True
+                )
+                condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
+                st.table(condition_dosing_df)
+
+    st.write("<span style='color:black'>Please consult with a healthcare professional for more detailed and personal vaccine recommendations.</span>", unsafe_allow_html=True)
