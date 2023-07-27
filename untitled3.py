@@ -137,9 +137,9 @@ if age > 0:
         )
         for vaccine in vaccines_not_taken:
             if normal_schedule_check:
-            st.markdown(
-                f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
-            )
+                st.markdown(
+                    f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
+                )
             # Display the Eligibility and Ineligibility info if they are not empty
             if eligible_vaccines[vaccine]["eligibility"]:
                 st.markdown(f"**<span style='color:green'>**You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
