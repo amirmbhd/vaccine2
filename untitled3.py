@@ -10,11 +10,7 @@ def color_rows(row):
         color = 'red'
     return ['color: %s' % color]*len(row.values)
 
-def alt_dosing_table(row):
-    conditions = [f'condition {i}' for i in range(1,8) if pd.notna(row[f'condition {i}'])]
-    alt_dosings = [f'Alternate dosing {i}' for i in range(1,8) if pd.notna(row[f'Alternate dosing {i}'])]
-    return pd.DataFrame({'Condition': conditions, 'Alternate dosing': alt_dosings})
-
+# Define the months and years options
 months_options = list(range(13))  # 0 to 12
 years_options = list(range(120))  # 0 to 119
 
@@ -28,6 +24,7 @@ st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.selectbox("Years:", years_options)
 
+# Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
 if age_year < 18:
@@ -35,8 +32,10 @@ if age_year < 18:
 else:
     sheet = "adults"
 
+# Read the vaccine information from the Excel file
 vaccine_df = pd.read_excel("vaccinesfull.xlsx", sheet_name=sheet)
 
+# Convert the DataFrame to a dictionary
 vaccines = {}
 for _, row in vaccine_df.iterrows():
     vaccine = row["Vaccine"]
@@ -46,21 +45,19 @@ for _, row in vaccine_df.iterrows():
     ineligibility = row["Ineligibility"] if pd.notna(row["Ineligibility"]) else ""
     doses_info = {}
     timeline = {}
-    for i in range(1, 6):  
-        if row[f"Dose {i}"] != 'X': 
+    for i in range(1, 6):  # Adjusted to include Dose 1 to Dose 5
+        if row[f"Dose {i}"] != 'X':  # If the cell is not 'X'
             dose_min = row[f"Dose {i} Min"]
             dose_max = row[f"Dose {i} Max"]
             doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
-    
-    conditions = [row[f"condition {i}"] for i in range(1, 8) if pd.notna(row[f"condition {i}"])]
-    alt_dosings = [row[f"Alternate dosing {i}"] for i in range(1, 8) if pd.notna(row[f"Alternate dosing {i}"])]
-    
-    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "conditions": conditions, "alt_dosings": alt_dosings}
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility}
 
 if age > 0:
+    # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
+    # Sidebar for already taken vaccines
     st.sidebar.markdown(
         "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
         unsafe_allow_html=True,
@@ -69,11 +66,13 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
+    # Define the data for the table
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
         data.append([vaccine, info["doses"], status])
 
+    # Create the DataFrame
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
@@ -86,6 +85,7 @@ if age > 0:
             tbody th {display:none}
             </style>
             """
+    # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
     if "None" not in vaccine_selection:
@@ -103,7 +103,7 @@ if age > 0:
                     value=1,
                 )
                 if doses_taken > 0:
-                    doses_needed = vaccines[vaccine_key]["doses"] - doses_taken
+                    doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
                     if doses_needed > 0:
                         st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
                         df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'
@@ -112,9 +112,11 @@ if age > 0:
                 else:
                     df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
+    # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
+
     if len(vaccines_not_taken) > 0:
         st.markdown(
             "**<span style='color:#708090'>The timeline for your remaining vaccines:</span>**",
@@ -124,6 +126,7 @@ if age > 0:
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
             )
+            # Display the Eligibility and Ineligibility info if they are not empty
             if eligible_vaccines[vaccine]["eligibility"]:
                 st.markdown(f"**<span style='color:green'>**You are eligible to get this vaccine if meeting one of the following conditions or criteria:**</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
             if eligible_vaccines[vaccine]["ineligibility"]:
@@ -132,7 +135,8 @@ if age > 0:
             timeline_data = []
             for dose, time in eligible_vaccines[vaccine]["timeline"].items():
                 timeline_data.append([dose, time])
-            timeline_df = pd.DataFrame(timeline_data, columns=[" 
+            timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
+            st.table(timeline_df)
 
             # Check the condition and alternate dosing columns
             condition_columns = [f"condition {i+1}" for i in range(7)]
