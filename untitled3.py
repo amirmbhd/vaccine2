@@ -127,7 +127,7 @@ if age > 0:
             )
 # Display the Eligibility and Ineligibility info if they are not empty
             if eligible_vaccines[vaccine]["eligibility"]:
-                st.markdown(f"**<span style='color:#FF0000'> Eligibility: {eligible_vaccines[vaccine]['eligibility']}</span>**")
+                st.markdown(f"Eligibility: {eligible_vaccines[vaccine]['eligibility']}")
             if eligible_vaccines[vaccine]["ineligibility"]:
                 st.markdown(f"Ineligibility: {eligible_vaccines[vaccine]['ineligibility']}")
 
