@@ -154,7 +154,7 @@ if age > 0:
             # Display the conditions and alternate dosing table if the corresponding checkbox is checked
             if conditions_dosing_check and len(condition_dosing_data) > 0:
                 st.markdown(
-                    f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**",
+                    f"**<span style='color:#05014A'>Conditions and Alternate Dosing for {vaccine}:</span>**",
                     unsafe_allow_html=True
                 )
                 condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
