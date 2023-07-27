@@ -45,13 +45,20 @@ for _, row in vaccine_df.iterrows():
     ineligibility = row["Ineligibility"] if pd.notna(row["Ineligibility"]) else ""
     doses_info = {}
     timeline = {}
+    condition_dosing = {}
     for i in range(1, 6):  # Adjusted to include Dose 1 to Dose 5
         if row[f"Dose {i}"] != 'X':  # If the cell is not 'X'
             dose_min = row[f"Dose {i} Min"]
             dose_max = row[f"Dose {i} Max"]
             doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
-    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility}
+    # Added for conditions and alternate dosing
+    condition_columns = [f"condition {i+1}" for i in range(7)]
+    dosing_columns = [f"Alternate dosing {i+1}" for i in range(7)]
+    for condition_column, dosing_column in zip(condition_columns, dosing_columns):
+        if pd.notna(row[condition_column]) and pd.notna(row[dosing_column]):
+            condition_dosing[row[condition_column]] = row[dosing_column]
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "condition_dosing": condition_dosing}
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -128,23 +135,14 @@ if age > 0:
             )
             # Display the Eligibility and Ineligibility info if they are not empty
             if eligible_vaccines[vaccine]["eligibility"]:
-                st.markdown(f"**<span style='color:green'>**You are eligible to get this vaccine if meeting one of the following conditions or criteria:**</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
+                st.markdown(f"**<span style='color:green'>**You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
             if eligible_vaccines[vaccine]["ineligibility"]:
-                st.markdown(f"**<span style='color:red'>**You are NOT eligible to get this vaccine if meeting one of the following conditions or criteria:**</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-            
-            timeline_data = []
-            for dose, time in eligible_vaccines[vaccine]["timeline"].items():
-                timeline_data.append([dose, time])
-            timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
-            st.table(timeline_df)
+                st.markdown(f"**<span style='color:red'>**You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
+            st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
 
-            # Check the condition and alternate dosing columns
-            condition_columns = [f"condition {i+1}" for i in range(7)]
-            dosing_columns = [f"Alternate dosing {i+1}" for i in range(7)]
             condition_dosing_data = []
-            for condition_column, dosing_column in zip(condition_columns, dosing_columns):
-                if pd.notna(row[condition_column]) and pd.notna(row[dosing_column]):
-                    condition_dosing_data.append([row[condition_column], row[dosing_column]])
+            for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
+                condition_dosing_data.append([condition, dosing])
             
             if len(condition_dosing_data) > 0:
                 st.markdown(
