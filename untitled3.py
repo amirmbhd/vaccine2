@@ -141,21 +141,23 @@ if age > 0:
                     f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
                 )
             # Display the Eligibility and Ineligibility info if they are not empty
-            if eligible_vaccines[vaccine]["eligibility"]:
-                st.markdown(f"**<span style='color:green'>**You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
-            if eligible_vaccines[vaccine]["ineligibility"]:
-                st.markdown(f"**<span style='color:red'>**You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-            st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
+            if eligibility_criteria_check:
+
+                if eligible_vaccines[vaccine]["eligibility"]:
+                    st.markdown(f"**<span style='color:green'>**You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
+                if eligible_vaccines[vaccine]["ineligibility"]:
+                    st.markdown(f"**<span style='color:red'>**You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
+                st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
 
             condition_dosing_data = []
             for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
                 condition_dosing_data.append([condition, dosing])
             
             if len(condition_dosing_data) > 0:
-                st.markdown(
-                    f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**", unsafe_allow_html=True
-                )
-                condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
-                st.table(condition_dosing_df)
+                if conditions_dosing_check and len(condition_dosing_data) > 0:
 
-st.write("<span style='color:black'>Please consult with a healthcare professional for more detailed and personal vaccine recommendations.</span>", unsafe_allow_html=True)
+                        st.markdown(
+                            f"**<span style='color:#708090'>Conditions and Alternate Dosing for {vaccine}:</span>**", unsafe_allow_html=True
+                        )
+                        condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
+                        st.table(condition_dosing_df)
