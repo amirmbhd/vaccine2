@@ -125,14 +125,17 @@ if age > 0:
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
             )
+# Display the Eligibility and Ineligibility info if they are not empty
+            if eligible_vaccines[vaccine]["eligibility"]:
+                st.text(f"Eligibility: {eligible_vaccines[vaccine]['eligibility']}")
+            if eligible_vaccines[vaccine]["ineligibility"]:
+                st.text(f"Ineligibility: {eligible_vaccines[vaccine]['ineligibility']}")
+
+            
             timeline_data = []
             for dose, time in eligible_vaccines[vaccine]["timeline"].items():
                 timeline_data.append([dose, time])
             timeline_df = pd.DataFrame(timeline_data, columns=["Dose", "Time"])
             st.table(timeline_df)
 
-            # Display the Eligibility and Ineligibility info if they are not empty
-            if eligible_vaccines[vaccine]["eligibility"]:
-                st.text(f"Eligibility: {eligible_vaccines[vaccine]['eligibility']}")
-            if eligible_vaccines[vaccine]["ineligibility"]:
-                st.text(f"Ineligibility: {eligible_vaccines[vaccine]['ineligibility']}")
+            
