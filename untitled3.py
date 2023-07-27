@@ -140,9 +140,10 @@ if age > 0:
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
             )
-            # Display the eligibility and ineligibility info if the corresponding checkbox is checked
+            # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
-                st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
+                if eligible_vaccines[vaccine]['eligibility']:
+                    st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
                 if eligible_vaccines[vaccine]["ineligibility"]:
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
             if normal_schedule_check:
