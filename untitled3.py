@@ -160,4 +160,3 @@ if age > 0:
                 condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
                 st.table(condition_dosing_df)
 
-    st.write("<span style='color:black'>Please consult with a healthcare professional for more detailed and personal vaccine recommendations.</span>", unsafe_allow_html=True)
