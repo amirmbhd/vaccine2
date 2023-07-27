@@ -84,6 +84,12 @@ if age > 0:
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
 
+    # Define the checkboxes in the sidebar
+    normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
+    eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
+    conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
+
+
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     hide_table_row_index = """
@@ -130,6 +136,7 @@ if age > 0:
             unsafe_allow_html=True,
         )
         for vaccine in vaccines_not_taken:
+            if normal_schedule_check:
             st.markdown(
                 f"**<span style='color:#708090'>{vaccine}:</span>**", unsafe_allow_html=True
             )
