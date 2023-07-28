@@ -149,7 +149,6 @@ if age > 0:
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
 
                 # Ask the user for their eligibility status after displaying the eligibility and ineligibility criteria
-                eligibility_status = st.selectbox(f"Based on the information provided, what is your eligibility status for {vaccine}?", ['Select an option', 'Eligible', 'Ineligible'])
                 if eligibility_status == 'Eligible':
                     st.write(f"You have selected that you are eligible for {vaccine}.")
                 elif eligibility_status == 'Ineligible':
