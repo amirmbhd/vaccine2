@@ -90,7 +90,7 @@ if age > 0:
     conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
 
     # Always Display the first table regardless of the checkbox state
-    st.markdown("Routine Vaccines Recommended and their status:")
+    st.markdown("**Routine Vaccines Recommended and their status:**")
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     hide_table_row_index = """
