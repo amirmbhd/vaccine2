@@ -143,9 +143,10 @@ if age > 0:
             )
           
 
+          
             # ...
             if eligibility_criteria_check:
-                for vaccine in vaccines_not_taken:
+                for i, vaccine in enumerate(vaccines_not_taken):
                     if eligible_vaccines[vaccine]['eligibility'] or eligible_vaccines[vaccine]['ineligibility']:
                         st.markdown(
                             f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
@@ -154,9 +155,10 @@ if age > 0:
                             st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
                         if eligible_vaccines[vaccine]["ineligibility"]:
                             st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-            
+                    
                         # Ask the user for their eligibility status after displaying the eligibility and ineligibility criteria
-                        eligibility_status = st.radio(f"Based on the information provided, what is your eligibility status for {vaccine}?", ['Eligible', 'Ineligible'], key=vaccine+"_eligibility")
+                        # Include the index `i` in the key to ensure uniqueness
+                        eligibility_status = st.radio(f"Based on the information provided, what is your eligibility status for {vaccine}?", ['Eligible', 'Ineligible'], key=f"{vaccine}_eligibility_{i}")
                         if eligibility_status == 'Eligible':
                             st.write(f"You have selected that you are eligible for {vaccine}.")
                         elif eligibility_status == 'Ineligible':
