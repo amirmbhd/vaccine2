@@ -137,46 +137,33 @@ if age > 0:
                 "**<span style='color:#254912'>The timeline for your remaining vaccines:</span>**",
                 unsafe_allow_html=True,
             )
-        for vaccine in vaccines_not_taken:
+        for i, vaccine in enumerate(vaccines_not_taken):
             st.markdown(
                 f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
             )
-          
-
-          
 
             if eligibility_criteria_check:
-                for i, vaccine in enumerate(vaccines_not_taken):
-                    if eligible_vaccines[vaccine]['eligibility'] or eligible_vaccines[vaccine]['ineligibility']:
-                        st.markdown(
-                            f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
-                        )
-                        if eligible_vaccines[vaccine]['eligibility']:
-                            st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
-                        if eligible_vaccines[vaccine]["ineligibility"]:
-                            st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-                        
-                        # Ask the user for their eligibility status after displaying the eligibility and ineligibility criteria
-                        # Generate a unique key for each radio button by using both the vaccine name and the index
-                        unique_key = f"{vaccine}_eligibility_{i}"
-                        eligibility_status = st.radio(f"Based on the information provided, what is your eligibility status for {vaccine}?", ['Eligible', 'Ineligible'], key=unique_key)
-                        if eligibility_status == 'Eligible':
-                            st.write(f"You have selected that you are eligible for {vaccine}.")
-                        elif eligibility_status == 'Ineligible':
-                            st.write(f"You have selected that you are not eligible for {vaccine}.")
+                if eligible_vaccines[vaccine]["eligibility"]:
+                    st.markdown(
+                        f"**Eligibility**: {eligible_vaccines[vaccine]['eligibility']}"
+                    )
+                if eligible_vaccines[vaccine]["ineligibility"]:
+                    st.markdown(
+                        f"**Ineligibility**: {eligible_vaccines[vaccine]['ineligibility']}"
+                    )
 
+            if conditions_dosing_check:
+                if eligible_vaccines[vaccine]["condition_dosing"]:
+                    st.markdown(
+                        f"**Conditions and Alternate Dosing**:"
+                    )
+                    for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
+                        st.markdown(
+                            f"{condition}: {dosing}"
+                        )
 
             if normal_schedule_check:
-                st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
-            condition_dosing_data = []
-            for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
-                condition_dosing_data.append([condition, dosing])
-            # Display the conditions and alternate dosing table if the corresponding checkbox is checked
-            if conditions_dosing_check and len(condition_dosing_data) > 0:
-                st.markdown(
-                    f"**<span style='color:#05014A'>Conditions and Alternate Dosing for {vaccine}:</span>**",
-                    unsafe_allow_html=True
-                )
-                condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
-                st.table(condition_dosing_df)
-
+                for dose, age in eligible_vaccines[vaccine]["timeline"].items():
+                    st.markdown(
+                        f"{dose}: {age}"
+                    )
