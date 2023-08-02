@@ -89,18 +89,6 @@ if age > 0:
     eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
     conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
 
-    # Always Display the first table regardless of the checkbox state
-    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
-    hide_table_row_index = """
-            <style>
-            thead tr th:first-child {display:none}
-            tbody th {display:none}
-            </style>
-            """
-    # Inject CSS with Markdown
-    st.markdown(hide_table_row_index, unsafe_allow_html=True)
-
     if "None" not in vaccine_selection:
         for vaccine in vaccine_selection:
             vaccine_key = vaccine.strip()
@@ -124,6 +112,18 @@ if age > 0:
                         st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
                 else:
                     df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
+
+    # Always Display the first table regardless of the checkbox state
+    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+
+    hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
     # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
