@@ -127,10 +127,6 @@ if age > 0:
         st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule:</span>**", unsafe_allow_html=True)
         st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    if not df_conditional.empty:
-        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule:</span>**", unsafe_allow_html=True)
-        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    
     # ... code remains same ...
     hide_table_row_index = """
             <style>
