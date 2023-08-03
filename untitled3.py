@@ -78,7 +78,7 @@ if age > 0:
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
-        data.append([vaccine, info["doses"], status, info["Schedule"]])
+        data.append([vaccine, info["doses"], status, info.get("Schedule")])
     
     # Add 'Schedule' to the DataFrame columns
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
