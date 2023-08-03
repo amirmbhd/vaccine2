@@ -59,7 +59,7 @@ for _, row in vaccine_df.iterrows():
     for condition_column, dosing_column in zip(condition_columns, dosing_columns):
         if pd.notna(row[condition_column]) and pd.notna(row[dosing_column]):
             condition_dosing[row[condition_column]] = row[dosing_column]
-    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "condition_dosing": condition_dosing}
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "condition_dosing": condition_dosing, "Schedule": Schedule}
 
 if age > 0:
     # Determine which vaccines the user is eligible for
