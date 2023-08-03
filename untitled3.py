@@ -84,7 +84,10 @@ if age > 0:
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
-    
+
+    # split the dataframe into two based on the 'Schedule' column
+    df_conditional = df[df['Schedule'] == 'Conditional']
+    df_non_conditional = df[df['Schedule'] != 'Conditional']
 
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
@@ -118,6 +121,12 @@ if age > 0:
     # Always Display the first table regardless of the checkbox state
     st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
+    # Display the second table (conditional schedule) if it's not empty
+    if not df_conditional.empty:
+        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule:</span>**", unsafe_allow_html=True)
+        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
+    # ... code remains same ...
     hide_table_row_index = """
             <style>
             thead tr th:first-child {display:none}
