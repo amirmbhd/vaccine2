@@ -53,8 +53,8 @@ for _, row in vaccine_df.iterrows():
             doses_info[f"Dose {i}"] = {"min": dose_min, "max": dose_max}
             timeline[f"Dose {i}"] = row[f"Dose {i}"]
     # Added for conditions and alternate dosing
-    condition_columns = [f"condition {i+1}" for i in range(7)]
-    dosing_columns = [f"Alternate dosing {i+1}" for i in range(7)]
+    condition_columns = [f"condition {i+1}" for i in range(10)]
+    dosing_columns = [f"Alternate dosing {i+1}" for i in range(10)]
     for condition_column, dosing_column in zip(condition_columns, dosing_columns):
         if pd.notna(row[condition_column]) and pd.notna(row[dosing_column]):
             condition_dosing[row[condition_column]] = row[dosing_column]
