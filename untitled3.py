@@ -43,7 +43,7 @@ for _, row in vaccine_df.iterrows():
     age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
     eligibility = row["Eligibility"] if pd.notna(row["Eligibility"]) else ""
     ineligibility = row["Ineligibility"] if pd.notna(row["Ineligibility"]) else ""
-    schedule = row["Schedule"] if pd.notna(row["Schedule"]) else "" # Add this line
+    schedule = row["Schedule"] if pd.notna(row["Schedule"]) else "" 
     doses_info = {}
     timeline = {}
     condition_dosing = {}
