@@ -59,7 +59,7 @@ for _, row in vaccine_df.iterrows():
     for condition_column, dosing_column in zip(condition_columns, dosing_columns):
         if pd.notna(row[condition_column]) and pd.notna(row[dosing_column]):
             condition_dosing[row[condition_column]] = row[dosing_column]
-    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "condition_dosing": condition_dosing, "Schedule": Schedule}
+    vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "condition_dosing": condition_dosing}
 
 if age > 0:
     # Determine which vaccines the user is eligible for
@@ -78,12 +78,13 @@ if age > 0:
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
-        data.append([vaccine, info["doses"], status, info.get("Schedule")]) # I've updated this line to use get()
-
+        data.append([vaccine, info["doses"], status, info["Schedule"]])
+    
     # Add 'Schedule' to the DataFrame columns
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
+    
 
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
@@ -139,34 +140,24 @@ if age > 0:
             )
         for vaccine in vaccines_not_taken:
             st.markdown(
-                f"**<span style='color:#5C27E7'>{vaccine}:</span>**",
-                unsafe_allow_html=True,
+                f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
             )
-            for dose, time in eligible_vaccines[vaccine]['timeline'].items():
-                st.write(f"{dose}: {time}")
-
-        if eligibility_criteria_check:
-            st.markdown(
-                "**<span style='color:#254912'>Eligibility and Ineligibility Criteria for your remaining vaccines:</span>**",
-                unsafe_allow_html=True,
-            )
-            for vaccine in vaccines_not_taken:
+            # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
+            if eligibility_criteria_check:
+                if eligible_vaccines[vaccine]['eligibility']:
+                    st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
+                if eligible_vaccines[vaccine]["ineligibility"]:
+                    st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
+            if normal_schedule_check:
+                st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
+            condition_dosing_data = []
+            for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
+                condition_dosing_data.append([condition, dosing])
+            # Display the conditions and alternate dosing table if the corresponding checkbox is checked
+            if conditions_dosing_check and len(condition_dosing_data) > 0:
                 st.markdown(
-                    f"**<span style='color:#5C27E7'>{vaccine}:</span>**",
-                    unsafe_allow_html=True,
+                    f"**<span style='color:#05014A'>Conditions and Alternate Dosing for {vaccine}:</span>**",
+                    unsafe_allow_html=True
                 )
-                st.write(f"Eligibility: {eligible_vaccines[vaccine]['eligibility']}")
-                st.write(f"Ineligibility: {eligible_vaccines[vaccine]['ineligibility']}")
-
-        if conditions_dosing_check:
-            st.markdown(
-                "**<span style='color:#254912'>Conditions and alternative dosing for your remaining vaccines:</span>**",
-                unsafe_allow_html=True,
-            )
-            for vaccine in vaccines_not_taken:
-                st.markdown(
-                    f"**<span style='color:#5C27E7'>{vaccine}:</span>**",
-                    unsafe_allow_html=True,
-                )
-                for condition, dosing in eligible_vaccines[vaccine]['condition_dosing'].items():
-                    st.write(f"{condition}: {dosing}")
+                condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
+                st.table(condition_dosing_df)
