@@ -95,6 +95,11 @@ if age > 0:
     eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
     conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
 
+        # Fetch vaccines that are not taken or are in progress
+    vaccines_not_taken = [
+        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
+    ]
+
     if "None" not in vaccine_selection:
         for vaccine in vaccine_selection:
             vaccine_key = vaccine.strip()
@@ -138,10 +143,6 @@ if age > 0:
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
-    # Fetch vaccines that are not taken or are in progress
-    vaccines_not_taken = [
-        vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
-    ]
 
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
