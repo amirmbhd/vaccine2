@@ -81,7 +81,7 @@ if age > 0:
         data.append([vaccine, info["doses"], status, info["schedule"]])  # Add 'info["schedule"]' here
     
     # Add 'Schedule' to the DataFrame columns
-    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])  # Add 'Schedule' here
+    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
     
