@@ -79,7 +79,7 @@ if age > 0:
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
-    
+
     # Add 'Schedule' to the DataFrame columns
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
     df = df.sort_values(by="Status", ascending=False)
@@ -87,7 +87,8 @@ if age > 0:
 
     # split the dataframe into two based on the 'Schedule' column
     df_conditional = df[df['Schedule'] == 'Conditional']
-    df_non_conditional = df[df['Schedule'] != 'Conditional']
+    df_non_conditional = df.drop(df_conditional.index)
+    
 
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
@@ -119,9 +120,13 @@ if age > 0:
                     df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'
 
     # Always Display the first table regardless of the checkbox state
-    st.table(df.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     # Display the second table (conditional schedule) if it's not empty
+    if not df_conditional.empty:
+        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule:</span>**", unsafe_allow_html=True)
+        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+
     if not df_conditional.empty:
         st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule:</span>**", unsafe_allow_html=True)
         st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
