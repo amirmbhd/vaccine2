@@ -43,6 +43,7 @@ for _, row in vaccine_df.iterrows():
     age_range = range(row["Minimum Age"], row["Maximum Age"] + 1)
     eligibility = row["Eligibility"] if pd.notna(row["Eligibility"]) else ""
     ineligibility = row["Ineligibility"] if pd.notna(row["Ineligibility"]) else ""
+    schedule = row["Schedule"] if pd.notna(row["Schedule"]) else "" # Add this line
     doses_info = {}
     timeline = {}
     condition_dosing = {}
@@ -73,16 +74,17 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    # Define the data for the table
+    # Add 'Schedule' to the data for the table
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Completed" if vaccine in vaccine_selection else "Pending"
-        data.append([vaccine, info["doses"], status])
-
-    # Create the DataFrame
-    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status"])
+        data.append([vaccine, info["doses"], status, info["schedule"]])  # Add 'info["schedule"]' here
+    
+    # Add 'Schedule' to the DataFrame columns
+    df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])  # Add 'Schedule' here
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
+    
 
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
