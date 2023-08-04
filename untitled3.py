@@ -74,11 +74,23 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    # Add 'Schedule' to the data for the table
     data = []
     for vaccine, info in eligible_vaccines.items():
-        status = "Completed" if vaccine in vaccine_selection else "Pending"
+        status = "Pending"
+        if vaccine in vaccine_selection:
+            doses_taken = st.sidebar.number_input(
+                        f"How many doses of {vaccine} have you taken?",
+                        min_value=1,
+                        value=1,
+                    )
+            if doses_taken > 0:
+                doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                if doses_needed > 0:
+                    status = 'In Progress'  # directly update status
+                else:
+                    status = 'Completed'  # directly update status
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
+
 
     # Add 'Schedule' to the DataFrame columns
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
@@ -95,30 +107,6 @@ if age > 0:
     eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
     conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
 
-    if "None" not in vaccine_selection:
-        for vaccine in vaccine_selection:
-            vaccine_key = vaccine.strip()
-            show_completion = st.sidebar.radio(
-                f"Do you want to check if you have completed the series for {vaccine_key}?",
-                ["No", "Yes"],
-                index=0,
-            )
-            if show_completion == "Yes":
-                doses_taken = st.sidebar.number_input(
-                    f"How many doses of {vaccine_key} have you taken?",
-                    min_value=1,
-                    value=1,
-                )
-                if doses_taken > 0:
-                    doses_needed = vaccines[vaccine_key]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
-                    if doses_needed > 0:
-                        st.sidebar.write(f"You need {doses_needed} more doses of {vaccine_key}.")
-                        df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'In Progress'  # directly update status in the DataFrame
-                    else:
-                        st.sidebar.write(f"You have completed the required doses for {vaccine_key}.")
-                        df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Completed'  # directly update status in the DataFrame
-                else:
-                    df.loc[df['Vaccine Name'] == vaccine_key, 'Status'] = 'Pending'  # directly update status in the DataFrame
                     
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
