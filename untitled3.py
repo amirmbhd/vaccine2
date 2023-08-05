@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-[theme]
-base = "dark"
+st.set_option('darkMode', False)
 
 
 def color_rows(row):
