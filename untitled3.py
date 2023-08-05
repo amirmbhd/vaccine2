@@ -21,14 +21,16 @@ st.markdown(
 )
    
 
+st.sidebar.markdown("© Amir Behdani & Sterling Saunders")
+st.sidebar.markdown("---")
 
 st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.number_input("Years:", min_value=0, max_value=120, value=0)
 
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("© Amir Behdani & Sterling Saunders")
+
+
 
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
