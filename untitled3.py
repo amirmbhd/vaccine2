@@ -101,11 +101,19 @@ if age > 0:
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
     
-
+    
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
     eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
-    conditions_dosing_check = st.sidebar.checkbox("Conditions and Alternative dosing")
+    
+    # Set the checkbox label based on the age
+    if age_year < 19:
+        checkbox_label = "Catch Up Dosing"
+    else:
+        checkbox_label = "Conditions and Alternate Dosing"
+    
+    conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
+    
 
                     
     # Always Display the first table regardless of the checkbox state
