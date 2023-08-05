@@ -19,6 +19,7 @@ st.title("Vaccine Recommendation Program")
 st.markdown(
     "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
 )
+st.markdown("---")   
 st.markdown("© Amir Behdani & Sterling Saunders")
 st.markdown("---")   
 
