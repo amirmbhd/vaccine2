@@ -19,10 +19,16 @@ st.title("Vaccine Recommendation Program")
 st.markdown(
     "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
 )
+   
+
 
 st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
 age_year = st.sidebar.number_input("Years:", min_value=0, max_value=120, value=0)
+
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("© Amir Behdani & Sterling Saunders")
 
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
@@ -115,10 +121,7 @@ if age > 0:
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
     
 
-    # ...
 
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("© Amir Behdani & Sterling Saunders")
                 
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
