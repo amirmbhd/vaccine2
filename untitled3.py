@@ -127,11 +127,13 @@ if age > 0:
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     
     # Fetch vaccines that are not taken or are in progress
+    # ...
+
+    # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
-
-
+    
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
             st.markdown(
@@ -155,8 +157,14 @@ if age > 0:
                 condition_dosing_data.append([condition, dosing])
             # Display the conditions and alternate dosing table if the corresponding checkbox is checked
             if conditions_dosing_check and len(condition_dosing_data) > 0:
+                # Set the title based on the age
+                if age_year < 19:
+                    section_title = "Catch Up Dosing"
+                else:
+                    section_title = "Conditions and Alternate Dosing"
+    
                 st.markdown(
-                    f"**<span style='color:#05014A'>Conditions and Alternate Dosing for {vaccine}:</span>**",
+                    f"**<span style='color:#05014A'>{section_title} for {vaccine}:</span>**",
                     unsafe_allow_html=True
                 )
                 condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
