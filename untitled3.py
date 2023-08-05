@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 
 [theme]
-backgroundColor = "#F0F0F0"
+base = "dark"
+
 
 def color_rows(row):
     if row['Status'] == 'Completed':
