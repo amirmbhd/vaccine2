@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+CURRENT_THEME = "light"
+
 def color_rows(row):
     if row['Status'] == 'Completed':
         color = 'green'
