@@ -115,7 +115,11 @@ if age > 0:
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
     
 
-                    
+    # ...
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("© Amir Behdani & Sterling Saunders")
+                
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
