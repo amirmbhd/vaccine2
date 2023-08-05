@@ -25,8 +25,9 @@ st.markdown(
 
 
 
-st.sidebar.markdown("---")
 st.sidebar.markdown("© Amir Behdani & Sterling Saunders")
+st.sidebar.markdown("---")
+
 
 st.sidebar.markdown("**Please enter your age:**")
 age_month = st.sidebar.selectbox("Months:", months_options)
