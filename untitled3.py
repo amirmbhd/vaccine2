@@ -145,18 +145,7 @@ if age > 0:
     
 
     
-     
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
 
-    
-    
 
 
 
@@ -183,7 +172,18 @@ if age > 0:
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
    
+         
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
 
+    
+    
        
   
     # Always Display the first table regardless of the checkbox state
