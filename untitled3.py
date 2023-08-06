@@ -121,37 +121,34 @@ if age > 0:
             options = ["Under Review", "Eligible", "Ineligible"]
             eligibility_status = st.sidebar.radio(vaccine, options)
             eligibility_statuses[vaccine] = eligibility_status
-    
     data = []
     for vaccine, info in eligible_vaccines.items():
         # Set default status as Pending
         status = "Pending"
         
+        if vaccine in vaccine_selection:
+            doses_taken = st.sidebar.number_input(
+                f"How many doses of {vaccine} have you taken?",
+                min_value=1,
+                value=1,
+            )
+            doses_needed = vaccines[vaccine]["doses"] - doses_taken
+            if doses_needed > 0:
+                status = 'In Progress'
+            else:
+                status = 'Completed'
         # If the vaccine is conditional, get its status from the radio buttons
-        if vaccine in eligibility_statuses:
+        elif vaccine in eligibility_statuses:
             if eligibility_statuses[vaccine] == "Under Review":
                 status = "Under Review"
             elif eligibility_statuses[vaccine] == "Eligible":
                 status = "Pending"
             elif eligibility_statuses[vaccine] == "Ineligible":
                 status = "Ineligible"
-        else:
-            if vaccine in vaccine_selection:
-                doses_taken = st.sidebar.number_input(
-                            f"How many doses of {vaccine} have you taken?",
-                            min_value=1,
-                            value=1,
-                        )
-                if doses_taken > 0:
-                    doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
-                    if doses_needed > 0:
-                        status = 'In Progress'  # directly update status
-                    else:
-                        status = 'Completed'  # directly update status
+    
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
-    
-    # ... Rest of your code ...
-    
+
+ 
     
     
     
