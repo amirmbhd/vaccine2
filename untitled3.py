@@ -12,9 +12,15 @@ def color_rows(row):
         color = 'green'
     elif row['Status'] == 'In Progress':
         color = 'orange'
+    elif row['Status'] == 'Under Review':
+        color = 'red'
+    elif row['Status'] == 'Ineligible':
+        color = 'green'
     else: # Status is 'Pending'
         color = 'red'
     return ['color: %s' % color]*len(row.values)
+    
+
 
 # Define the months and years options
 months_options = list(range(13))  # 0 to 12
@@ -92,6 +98,16 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
+
+    for vaccine, status in eligibility_statuses.items():
+        if status == "Under Review":
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Under Review"
+        elif status == "Eligible":
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
+        elif status == "Ineligible":
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
+
+    
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Pending"
@@ -133,8 +149,18 @@ if age > 0:
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
     
 
+        # At the end of the sidebar, ask the user to review eligibility criteria 
+    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
     
-                
+    # For each vaccine with a 'Conditional' status, present radio buttons
+    eligibility_statuses = {}
+    for index, row in df_conditional.iterrows():
+        vaccine_name = row['Vaccine Name']
+        options = ["Under Review", "Eligible", "Ineligible"]
+        eligibility_status = st.sidebar.radio(vaccine_name, options)
+        eligibility_statuses[vaccine_name] = eligibility_status
+    
+                    
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:#073863'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
