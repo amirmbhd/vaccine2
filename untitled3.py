@@ -133,10 +133,8 @@ if age > 0:
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
     eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
-    for vaccine in df_conditional["Vaccine Name"]:
-        if vaccine in st.session_state.vaccine_status:
-            df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = st.session_state.vaccine_status[vaccine]
-
+    
+    
     # Set the checkbox label based on the age
     if age_year < 19:
         checkbox_label = "Catch Up Dosing"
@@ -144,7 +142,13 @@ if age > 0:
         checkbox_label = "Conditions and Alternate Dosing"
     
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
+
     
+    for vaccine in df_conditional["Vaccine Name"]:
+        if vaccine in st.session_state.vaccine_status:
+            df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = st.session_state.vaccine_status[vaccine]
+
+
 
     
                 
@@ -155,7 +159,6 @@ if age > 0:
         st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
         st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    #df_conditional["Status"] = "Eligibility Under Review"
 
 
 
