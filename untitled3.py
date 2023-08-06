@@ -143,7 +143,7 @@ if age > 0:
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    df_conditional["Status"] = "Eligibility Under Review"
+    #df_conditional["Status"] = "Eligibility Under Review"
 
 
 
@@ -153,6 +153,19 @@ if age > 0:
     # Display the second table (conditional schedule) if it's not empty
     if not df_conditional.empty:
         st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+
+        if eligibility_info_present:
+            user_choice = st.radio(
+                f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
+                (' ', 'Eligible', 'Ineligible'),
+                key=f"eligibility_radio_{vaccine}"
+            )
+            
+            if user_choice == 'Eligible':
+                df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
+            elif user_choice == 'Ineligible':
+                df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+        
         st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
 
