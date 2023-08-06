@@ -1,8 +1,13 @@
 import streamlit as st
 import pandas as pd
 
+
 from PIL import Image
 
+def load_images('Banner.png'):
+    img = Image.open('Banner.png')
+    return st.image(img, width=700)
+    
 image = Image.open('Banner.png')
 
 
