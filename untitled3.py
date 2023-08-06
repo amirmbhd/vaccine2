@@ -144,7 +144,11 @@ if age > 0:
                 
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    
+    st.write("Check out the list of vaccines you might qualify for based on your age below. Please review the Eligibility and Ineligibility Criteria and select which one applies to you. There's a table at the end of this page that will summarize your eligibility status for all the conditional vaccines. It'll update based on what you choose!")
+
+
+
+
     
     #df_conditional["Status"] = "Eligibility Under Review"
 
