@@ -106,7 +106,15 @@ if age > 0:
    
     # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
-    
+        # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
+
     # Prompt for radio buttons before constructing the DataFrame
     eligibility_statuses = {}
     for vaccine, info in eligible_vaccines.items():
@@ -115,14 +123,6 @@ if age > 0:
             eligibility_status = st.sidebar.radio(vaccine, options)
             eligibility_statuses[vaccine] = eligibility_status
            
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
 
     
     data = []
