@@ -187,22 +187,29 @@ if age > 0:
                     st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
                 # ... some code above ...
 
-                
+                # ... previous parts of your code ...
+
                 if eligibility_info_present:
                     user_choice = st.radio(
                         f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
                         (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"
                     )
-       
+                
                     if user_choice == 'Eligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
                     elif user_choice == 'Ineligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
-                        
+                
                 st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-            
-                            
+                
+                # Fetch vaccines that are not taken or are in progress
+                # ...
+                
+                # ... rest of your code ...
+
+
+               
                             # Fetch vaccines that are not taken or are in progress
                             # ...                                            
                             
