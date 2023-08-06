@@ -115,6 +115,7 @@ if age > 0:
                     status = 'In Progress'  # directly update status
                 else:
                     status = 'Completed'  # directly update status
+                    st.write(df)
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
 
         # split the dataframe into two based on the 'Schedule' column
@@ -134,6 +135,8 @@ if age > 0:
         options = ["Under Review", "Eligible", "Ineligible"]
         eligibility_status = st.sidebar.radio(vaccine_name, options)
         eligibility_statuses[vaccine_name] = eligibility_status
+        st.write(eligibility_statuses)
+
  
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
