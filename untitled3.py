@@ -184,8 +184,7 @@ if age > 0:
                     eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
                 
-                                # ... (earlier parts of your code)
-                                # ... (earlier parts of your code)
+                            
                 
                 if eligibility_info_present:
                     user_choice = st.radio(
@@ -193,7 +192,7 @@ if age > 0:
                         ('Pending', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
-                
+                st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
                 # ... (rest of your code)
 
 
