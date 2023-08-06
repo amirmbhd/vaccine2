@@ -165,7 +165,15 @@ if age > 0:
     ]
     
     if len(vaccines_not_taken) > 0:
-        #if normal_schedule_check:
+        if normal_schedule_check:
+            st.markdown(
+                "**<span style='color:#254912'>The timeline for your remaining vaccines:</span>**",
+                unsafe_allow_html=True,
+            )
+        for vaccine in vaccines_not_taken:
+            st.markdown(
+                f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
+            )
             # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
                 if eligible_vaccines[vaccine]['eligibility']:
