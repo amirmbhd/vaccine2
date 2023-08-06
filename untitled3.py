@@ -211,9 +211,6 @@ if age > 0:
                     
 
 
-     # At the end of the sidebar, ask the user to review eligibility criteria 
-    #st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")   
-  
     # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
