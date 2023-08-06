@@ -97,8 +97,6 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Pending" if info["Schedule"] != 'Conditional' else "Eligibility Under Review"
@@ -168,10 +166,6 @@ if age > 0:
                 "**<span style='color:#254912'>The timeline for your remaining vaccines:</span>**",
                 unsafe_allow_html=True,
             )
-
-        # ... Earlier parts of your code ...
-        
-        # 1. Loop through each vaccine that hasn't been taken
         for vaccine in vaccines_not_taken:
             st.markdown(
                 f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
@@ -185,27 +179,42 @@ if age > 0:
                 if eligible_vaccines[vaccine]["ineligibility"]:
                     eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-        
+                
+         
+                
+                # Display the second table (conditional schedule) if it's not empty
+                if not df_conditional.empty:
+                    st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+                # ... some code above ...
+
+                # ... previous parts of your code ...
+
                 if eligibility_info_present:
                     user_choice = st.radio(
                         f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
                         (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"
                     )
-                    # 2. If the user provides input via the radio buttons, update the df_conditional DataFrame accordingly
+                
                     if user_choice == 'Eligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
                     elif user_choice == 'Ineligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
-        
-        # 3. Display the df_conditional table only once, outside the loop
-        if not df_conditional.empty:
-            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-            st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-        
-        # ... Rest of your code ...
+                
+                st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-       
+                hide_table_row_index = """
+                    <style>
+                    thead tr th:first-child {display:none}
+                    tbody th {display:none}
+                    </style>
+                    """
+                # Inject CSS with Markdown
+                st.markdown(hide_table_row_index, unsafe_allow_html=True)
+
+
+
+
               
 
             if normal_schedule_check:
