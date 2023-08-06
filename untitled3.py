@@ -177,9 +177,9 @@ if age > 0:
             # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
                 if eligible_vaccines[vaccine]['eligibility']:
-                    st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
+                    st.markdown(f"**<span style='color:green'>You are eligible for {vaccine} if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
                 if eligible_vaccines[vaccine]["ineligibility"]:
-                    st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
+                    st.markdown(f"**<span style='color:red'>You are not eligible for {vaccine} if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
             if normal_schedule_check:
                 section_title1 = "Normal schedule for"
                 st.markdown(
