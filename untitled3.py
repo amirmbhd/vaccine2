@@ -114,6 +114,16 @@ if age > 0:
             options = ["Under Review", "Eligible", "Ineligible"]
             eligibility_status = st.sidebar.radio(vaccine, options)
             eligibility_statuses[vaccine] = eligibility_status
+           
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
+
     
     data = []
     for vaccine, info in eligible_vaccines.items():
@@ -172,17 +182,7 @@ if age > 0:
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
    
-         
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
-
-    
+  
     
        
   
