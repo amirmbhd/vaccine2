@@ -201,6 +201,8 @@ if age > 0:
                                 # ... earlier code ...
                 
                 user_choice = ''  # Initialize user_choice
+
+                                # ... (your code above remains unchanged)
                 
                 if eligibility_info_present:
                     user_choice = st.radio(
@@ -209,26 +211,21 @@ if age > 0:
                         key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
                 
-                if user_choice == 'Eligible':
-                    # Find the row in df_conditional that matches the current vaccine and adjust its "Status" column
-                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
-                elif user_choice == 'Ineligible':
-                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+                    # Update the status in the df_conditional DataFrame based on the user's choice
+                    if user_choice == 'Eligible':
+                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
+                    elif user_choice == 'Ineligible':
+                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+                    
+                    # Update the display of radio buttons to be in a row
+                    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+                    
+                    # ... (rest of your code)
                 
-                # ... later code ...
+                # ... (your code continues)
+
                 
-                            
-               
-                st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-                # ... (rest of your code)
-                # Update the status in the DataFrame based on the user's choice
-                if user_choice == 'Eligible':
-                    df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
-                elif user_choice == 'Ineligible':
-                    df.at[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
-
-            
-
+       
 
             if normal_schedule_check:
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
