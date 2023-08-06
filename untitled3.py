@@ -128,12 +128,12 @@ if age > 0:
     df_non_conditional = df.drop(df_conditional.index)
 
     for vaccine, status in eligibility_statuses.items():
-    if status == "Under Review":
-        df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Under Review"
-    elif status == "Eligible":
-        df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
-    elif status == "Ineligible":
-        df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
+        if status == "Under Review":
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Under Review"
+        elif status == "Eligible":
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
+        elif status == "Ineligible":
+            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
 
     
         # At the end of the sidebar, ask the user to review eligibility criteria 
