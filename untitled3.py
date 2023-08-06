@@ -166,7 +166,7 @@ if age > 0:
     
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
-        for vaccine in vaccines_not_taken:
+            for vaccine in vaccines_not_taken:
             # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
                 if eligible_vaccines[vaccine]['eligibility']:
