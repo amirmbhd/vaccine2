@@ -189,7 +189,6 @@ if age > 0:
     # Display the second table (conditional schedule) if it's not empty
     if not df_conditional.empty:
         st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-
                 if eligibility_info_present:
                     user_choice = st.radio(
                         f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
