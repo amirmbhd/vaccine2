@@ -167,7 +167,7 @@ if age > 0:
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
             st.markdown(
-                "**<span style='color:#254912'>The timeline for your remaining vaccines:</span>**",
+                "**<span style='color:#254912'> **",
                 unsafe_allow_html=True,
             )
         for vaccine in vaccines_not_taken:
