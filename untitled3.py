@@ -7,7 +7,7 @@ def load_images(image_name):
     img = Image.open(image_name)
     return st.image(img, width=600)
 
-c_image = 'Banner.jpg'
+c_image = 'Banner2.jpg'
 load_images(c_image)
 
 
