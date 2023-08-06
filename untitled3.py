@@ -102,6 +102,25 @@ if age > 0:
  
         # split the dataframe into two based on the 'Schedule' column
     
+    data = []
+    for vaccine, info in eligible_vaccines.items():
+        status = "Pending"
+        if vaccine in vaccine_selection:
+            doses_taken = st.sidebar.number_input(
+                        f"How many doses of {vaccine} have you taken?",
+                        min_value=1,
+                        value=1,
+                    )
+            if doses_taken > 0:
+                doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                if doses_needed > 0:
+                    status = 'In Progress'  # directly update status
+                else:
+                    status = 'Completed'  # directly update status
+                    st.write(df)
+        data.append([vaccine, info["doses"], status, info.get("Schedule")])
+
+    
 
     # Add 'Schedule' to the DataFrame columns
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
@@ -128,25 +147,6 @@ if age > 0:
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
    
-    data = []
-    for vaccine, info in eligible_vaccines.items():
-        status = "Pending"
-        if vaccine in vaccine_selection:
-            doses_taken = st.sidebar.number_input(
-                        f"How many doses of {vaccine} have you taken?",
-                        min_value=1,
-                        value=1,
-                    )
-            if doses_taken > 0:
-                doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
-                if doses_needed > 0:
-                    status = 'In Progress'  # directly update status
-                else:
-                    status = 'Completed'  # directly update status
-                    st.write(df)
-        data.append([vaccine, info["doses"], status, info.get("Schedule")])
-
-    
         # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
        
