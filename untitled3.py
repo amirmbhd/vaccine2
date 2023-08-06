@@ -189,7 +189,7 @@ if age > 0:
                 if eligibility_info_present:
                     user_choice = st.radio(
                         f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
-                        ('Pending', 'Eligible', 'Ineligible'),
+                        (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
                 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
