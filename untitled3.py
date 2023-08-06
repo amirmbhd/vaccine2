@@ -11,9 +11,12 @@ def color_rows(row):
         color = 'green'
     elif row['Status'] == 'In Progress':
         color = 'orange'
-    else: # Status is 'Pending'
+    elif row['Status'] == 'Ineligible':  # New condition
+        color = 'green'
+    else: # Status is 'Eligibility Under Review' or 'Pending'
         color = 'red'
     return ['color: %s' % color]*len(row.values)
+
 
 # Define the months and years options
 months_options = list(range(13))  # 0 to 12
@@ -93,7 +96,7 @@ if age > 0:
 
     data = []
     for vaccine, info in eligible_vaccines.items():
-        status = "Pending"
+        status = "Pending" if info["Schedule"] != 'Conditional' else "Eligibility Under Review"
         if vaccine in vaccine_selection:
             doses_taken = st.sidebar.number_input(
                         f"How many doses of {vaccine} have you taken?",
@@ -194,6 +197,12 @@ if age > 0:
                     )
                 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
                 # ... (rest of your code)
+                # Update the status in the DataFrame based on the user's choice
+                if user_choice == 'Eligible':
+                    df.at[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
+                elif user_choice == 'Ineligible':
+                    df.at[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
+            
 
 
             if normal_schedule_check:
