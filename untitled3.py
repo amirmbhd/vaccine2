@@ -113,9 +113,7 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    # At the end of the sidebar, ask the user to review eligibility criteria 
-    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
-    
+
     # Prompt for radio buttons before constructing the DataFrame
     eligibility_statuses = {}
     for vaccine, info in eligible_vaccines.items():
@@ -173,7 +171,9 @@ if age > 0:
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
 
-
+        # At the end of the sidebar, ask the user to review eligibility criteria 
+    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
+    
  
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
