@@ -183,7 +183,7 @@ if age > 0:
             if normal_schedule_check:
                 section_title1 = "Normal schedule for"
                 st.markdown(
-                    f"**<span style='color:#073863'>{section_title1} for {vaccine}:</span>**",
+                    f"**<span style='color:black'>{section_title1} for {vaccine}:</span>**",
                     unsafe_allow_html=True
                 )
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
