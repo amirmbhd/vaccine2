@@ -183,9 +183,7 @@ if age > 0:
    
 
     
-    # At the end of the sidebar, ask the user to review eligibility criteria 
-    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")   
-  
+   
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:#073863'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
@@ -213,7 +211,9 @@ if age > 0:
                     
 
 
-
+     # At the end of the sidebar, ask the user to review eligibility criteria 
+    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")   
+  
     # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
