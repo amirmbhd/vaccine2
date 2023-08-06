@@ -223,9 +223,10 @@ if age > 0:
                 # ... (rest of your code)
                 # Update the status in the DataFrame based on the user's choice
                 if user_choice == 'Eligible':
-                    df.at[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
+                    df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
                 elif user_choice == 'Ineligible':
                     df.at[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
+
             
 
 
