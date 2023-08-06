@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 
 
-from PIL import Image
-
-def load_images('Banner.png'):
-    img = Image.open('Banner.png')
+def load_images(image_name):
+    img = Image.open(image_name)
     return st.image(img, width=700)
-    
-image = Image.open('Banner.png')
+
+c_image = 'Baner.png'
+load_images(c_image)
+
 
 
 
