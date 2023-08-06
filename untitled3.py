@@ -146,8 +146,8 @@ if age > 0:
     df_conditional["Status"] = "Eligibility Under Review"
     
     if not df_conditional.empty:
-    st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-    st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
     
 
 
