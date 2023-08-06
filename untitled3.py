@@ -185,12 +185,15 @@ if age > 0:
                 # Display the second table (conditional schedule) if it's not empty
                 if not df_conditional.empty:
                     st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-                            if eligibility_info_present:
-                                user_choice = st.radio(
-                                    f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
-                                    (' ', 'Eligible', 'Ineligible'),
-                                    key=f"eligibility_radio_{vaccine}"
-                                )
+                # ... some code above ...
+
+                
+                if eligibility_info_present:
+                    user_choice = st.radio(
+                        f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
+                        (' ', 'Eligible', 'Ineligible'),
+                        key=f"eligibility_radio_{vaccine}"
+                    )
                                 
                                 if user_choice == 'Eligible':
                                     df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
