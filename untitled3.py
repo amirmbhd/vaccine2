@@ -5,7 +5,7 @@ from PIL import Image
 
 def load_images(image_name):
     img = Image.open(image_name)
-    return st.image(img, width=700)
+    return st.image(img, width=200)
 
 c_image = 'Banner.png'
 load_images(c_image)
