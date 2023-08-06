@@ -188,7 +188,7 @@ if age > 0:
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
                 
                             
-                
+                user_choice = ''
                 if eligibility_info_present:
                     user_choice = st.radio(
                         f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
