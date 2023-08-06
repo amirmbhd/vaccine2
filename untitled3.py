@@ -127,6 +127,7 @@ if age > 0:
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
 
+    
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
             df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Under Review"
