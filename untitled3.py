@@ -194,15 +194,18 @@ if age > 0:
                         (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"
                     )
-                                
-                                if user_choice == 'Eligible':
-                                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
-                                elif user_choice == 'Ineligible':
-                                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+       
+                    if user_choice == 'Eligible':
+                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
+                    elif user_choice == 'Ineligible':
+                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+                        
+                st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+            
                             
-                            st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-                    
-                
+                            # Fetch vaccines that are not taken or are in progress
+                            # ...                                            
+                            
                             # ... code remains same ...
                             hide_table_row_index = """
                                     <style>
