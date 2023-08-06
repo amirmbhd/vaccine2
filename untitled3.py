@@ -103,16 +103,7 @@ if age > 0:
     
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
 
-    
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
-
+   
     # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
     
@@ -152,9 +143,18 @@ if age > 0:
                         status = 'Completed'  # directly update status
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
     
-    # ... Rest of your code ...
+
     
-    
+     
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
+
     
     
 
