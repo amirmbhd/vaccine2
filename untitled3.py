@@ -97,7 +97,6 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     data = []
     for vaccine, info in eligible_vaccines.items():
@@ -125,7 +124,9 @@ if age > 0:
     # split the dataframe into two based on the 'Schedule' column
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
-    
+
+    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+
     
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
