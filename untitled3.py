@@ -186,23 +186,23 @@ if age > 0:
 
                                 # ... (your code above remains unchanged)
                 
-    # Display the second table (conditional schedule) if it's not empty
-    if not df_conditional.empty:
-        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-                if eligibility_info_present:
-                    user_choice = st.radio(
-                        f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
-                        (' ', 'Eligible', 'Ineligible'),
-                        key=f"eligibility_radio_{vaccine}"
-                    )
+        # Display the second table (conditional schedule) if it's not empty
+        if not df_conditional.empty:
+            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+                    if eligibility_info_present:
+                        user_choice = st.radio(
+                            f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
+                            (' ', 'Eligible', 'Ineligible'),
+                            key=f"eligibility_radio_{vaccine}"
+                        )
+                        
+                        if user_choice == 'Eligible':
+                            df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
+                        elif user_choice == 'Ineligible':
+                            df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
                     
-                    if user_choice == 'Eligible':
-                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
-                    elif user_choice == 'Ineligible':
-                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
-                
-                st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-        
+                    st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+            
         
             # ... code remains same ...
             hide_table_row_index = """
