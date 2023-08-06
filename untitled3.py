@@ -29,7 +29,7 @@ years_options = list(range(120))  # 0 to 119
 
 
 st.write(
-    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
+    "Welcome to the Vaccine Recommender Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. You can also review normal vaccine schdeule,eligibility criteria and alternative dosing based on conditions and catch up vaccinations if applicable. **Enter the information in the sidebar to get started.**"
 )
 
 
@@ -145,7 +145,7 @@ if age > 0:
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:black'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    st.write("Check out the list of routine vaccines and other vaccines that you might qualify for based on your age below. You can  review normal vaccine schdeule,eligibility criteria and alternative dosing based on conditions and catch up vaccinations if applicable.")
+    st.write("Check out the list of routine vaccines and other vaccines that you might qualify for based on your age below:")
 
 
 
