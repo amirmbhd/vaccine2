@@ -113,8 +113,6 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-    # At the end of the sidebar, ask the user to review eligibility criteria 
-    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
     
     # Prompt for radio buttons before constructing the DataFrame
     eligibility_statuses = {}
@@ -184,7 +182,9 @@ if age > 0:
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
    
 
-       
+    
+    # At the end of the sidebar, ask the user to review eligibility criteria 
+    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")   
   
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:#073863'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
