@@ -117,7 +117,10 @@ if age > 0:
                     status = 'Completed'  # directly update status
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
 
-    
+        # split the dataframe into two based on the 'Schedule' column
+    df_conditional = df[df['Schedule'] == 'Conditional']
+    df_non_conditional = df.drop(df_conditional.index)
+        
         # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
         # For each vaccine with a 'Conditional' status, present radio buttons
@@ -144,10 +147,7 @@ if age > 0:
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
 
-    # split the dataframe into two based on the 'Schedule' column
-    df_conditional = df[df['Schedule'] == 'Conditional']
-    df_non_conditional = df.drop(df_conditional.index)
-    
+
     
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
