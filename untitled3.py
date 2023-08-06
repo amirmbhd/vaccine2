@@ -11,11 +11,14 @@ def color_rows(row):
         color = 'green'
     elif row['Status'] == 'In Progress':
         color = 'orange'
-    elif row['Status'] == 'Ineligible':  # New condition
-        color = 'green'
-    else: # Status is 'Eligibility Under Review' or 'Pending'
+    elif row['Status'] == 'Eligibility Under Review':
         color = 'red'
-    return ['color: %s' % color]*len(row.values)
+    elif row['Status'] == 'Ineligible':
+        color = 'green'
+    else:  # Status is 'Pending'
+        color = 'red'
+    return ['color: %s' % color] * len(row.values)
+
 
 
 # Define the months and years options
@@ -140,10 +143,13 @@ if age > 0:
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
-    # Display the second table (conditional schedule) if it's not empty
+    df_conditional["Status"] = "Eligibility Under Review"
+    
     if not df_conditional.empty:
-        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+    st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
+
 
     # ... code remains same ...
     hide_table_row_index = """
@@ -187,14 +193,27 @@ if age > 0:
                     eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
                 
-                            
-                user_choice = ''
+                                # ... earlier code ...
+                
+                user_choice = ''  # Initialize user_choice
+                
                 if eligibility_info_present:
                     user_choice = st.radio(
                         f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
                         (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
+                
+                if user_choice == 'Eligible':
+                    # Find the row in df_conditional that matches the current vaccine and adjust its "Status" column
+                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
+                elif user_choice == 'Ineligible':
+                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+                
+                # ... later code ...
+                
+                            
+               
                 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
                 # ... (rest of your code)
                 # Update the status in the DataFrame based on the user's choice
