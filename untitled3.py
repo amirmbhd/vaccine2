@@ -144,7 +144,7 @@ if age > 0:
                 
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    st.write("Check out the list of vaccines you might qualify for based on your age below. Please review the Eligibility and Ineligibility Criteria and select which one applies to you. There's a table at the end of this page that will summarize your eligibility status for all the conditional vaccines. It'll update based on what you choose!")
+    st.write("Check out the list of vaccines you might qualify for based on your age below. You can  review normal vaccine schdeule,eligibility criteria and alternative dosing based on conditions and catch up vaccinations if applicable.")
 
 
 
@@ -205,7 +205,7 @@ if age > 0:
         
         # 3. Display the df_conditional table only once, outside the loop
         if not df_conditional.empty:
-            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule. Please check Eligibility and Ineligibility Criteria to determine your eligibility. This Table will get updated based on your responses: </span>**", unsafe_allow_html=True)
             st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
         
         # ... Rest of your code ...
