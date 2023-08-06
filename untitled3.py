@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 from PIL import Image
 
 
@@ -11,25 +10,19 @@ def color_rows(row):
         color = 'green'
     elif row['Status'] == 'In Progress':
         color = 'orange'
-    elif row['Status'] == 'Eligibility Under Review':
+    else: # Status is 'Pending'
         color = 'red'
-    elif row['Status'] == 'Ineligible':
-        color = 'green'
-    else:  # Status is 'Pending'
-        color = 'red'
-    return ['color: %s' % color] * len(row.values)
-
-
+    return ['color: %s' % color]*len(row.values)
 
 # Define the months and years options
 months_options = list(range(13))  # 0 to 12
 years_options = list(range(120))  # 0 to 119
 
+st.title("Vaccine Recommendation Program")
 
 
-
-st.write(
-    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
+st.markdown(
+    "**Welcome to the Vaccine Recommender Program!** This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. You can also review normal vaccine schdeule,eligibility criteria, alternative dosing based on conditions and catch up vaccinations if applicable. **Enter the information in the sidebar to get started.**"
 )
 
 
@@ -50,7 +43,7 @@ age_year = st.sidebar.number_input("Years:", min_value=0, max_value=120, value=0
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
-if age_year < 19:
+if age_year < 18:
     sheet = "peds"
 else:
     sheet = "adults"
@@ -99,7 +92,7 @@ if age > 0:
 
     data = []
     for vaccine, info in eligible_vaccines.items():
-        status = "Pending" if info["Schedule"] != 'Conditional' else "Eligibility Under Review"
+        status = "Pending"
         if vaccine in vaccine_selection:
             doses_taken = st.sidebar.number_input(
                         f"How many doses of {vaccine} have you taken?",
@@ -141,24 +134,34 @@ if age > 0:
 
                 
     # Always Display the first table regardless of the checkbox state
+    st.markdown("**<span style='color:black'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-
-    #df_conditional["Status"] = "Eligibility Under Review"
-
+    st.write("Check out the list of routine vaccines and other vaccines that you might qualify for based on your age below:")
 
 
+    # Display the second table (conditional schedule) if it's not empty
+    if not df_conditional.empty:
+        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+        
+
+    # ... code remains same ...
+    hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+    # Inject CSS with Markdown
+    st.markdown(hide_table_row_index, unsafe_allow_html=True)
     
-
-
+    # Fetch vaccines that are not taken or are in progress
+    # ...
 
     # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
-
-    # ... (rest of your code above remains unchanged)
-    # ... (earlier parts of your code)
-
     
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
@@ -166,46 +169,16 @@ if age > 0:
                 "**<span style='color:#254912'>The timeline for your remaining vaccines:</span>**",
                 unsafe_allow_html=True,
             )
-
-        # ... Earlier parts of your code ...
-        
-        # 1. Loop through each vaccine that hasn't been taken
         for vaccine in vaccines_not_taken:
             st.markdown(
                 f"**<span style='color:#5C27E7'>{vaccine}:</span>**", unsafe_allow_html=True
             )
             # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
-                eligibility_info_present = False  # Flag to check if there's any eligibility or ineligibility info
                 if eligible_vaccines[vaccine]['eligibility']:
-                    eligibility_info_present = True
                     st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
                 if eligible_vaccines[vaccine]["ineligibility"]:
-                    eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
-        
-                if eligibility_info_present:
-                    user_choice = st.radio(
-                        f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
-                        (' ', 'Eligible', 'Ineligible'),
-                        key=f"eligibility_radio_{vaccine}"
-                    )
-                    # 2. If the user provides input via the radio buttons, update the df_conditional DataFrame accordingly
-                    if user_choice == 'Eligible':
-                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
-                    elif user_choice == 'Ineligible':
-                        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
-        
-        # 3. Display the df_conditional table only once, outside the loop
-        if not df_conditional.empty:
-            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-            st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-        
-        # ... Rest of your code ...
-
-       
-              
-
             if normal_schedule_check:
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
             condition_dosing_data = []
