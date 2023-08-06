@@ -112,7 +112,7 @@ if age > 0:
     for vaccine, info in eligible_vaccines.items():
         if info.get("Schedule") == "Conditional":
             options = ["Under Review", "Eligible", "Ineligible"]
-            eligibility_status = st.sidebar.radio(vaccine, options,horizontal=True)
+            eligibility_status = st.sidebar.radio(vaccine, options)
             eligibility_statuses[vaccine] = eligibility_status
 
      # Sidebar for already taken vaccines
