@@ -103,16 +103,7 @@ if age > 0:
     
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
 
-    
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
-
+   
     
     # Prompt for radio buttons before constructing the DataFrame
     eligibility_statuses = {}
@@ -169,7 +160,8 @@ if age > 0:
     df_non_conditional = df.drop(df_conditional.index)
 
 
- 
+    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
+
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Under Review"
@@ -177,7 +169,16 @@ if age > 0:
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Pending"
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
-   
+    
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
+
 
     
    
