@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+c_image = 'Banner.png'
+load_images(c_image)
 
 
 def color_rows(row):
