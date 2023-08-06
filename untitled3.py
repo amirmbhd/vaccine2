@@ -185,6 +185,7 @@ if age > 0:
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
                 
                                 # ... (earlier parts of your code)
+                                # ... (earlier parts of your code)
                 
                 if eligibility_info_present:
                     user_choice = st.radio(
@@ -194,6 +195,7 @@ if age > 0:
                     )
                 
                 # ... (rest of your code)
+
 
             if normal_schedule_check:
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
