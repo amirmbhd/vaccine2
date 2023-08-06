@@ -125,7 +125,6 @@ if age > 0:
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
 
-    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     
     # Define the checkboxes in the sidebar
@@ -145,6 +144,10 @@ if age > 0:
                 
     # Always Display the first table regardless of the checkbox state
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+    
+    if not df_conditional.empty:
+        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+        st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     #df_conditional["Status"] = "Eligibility Under Review"
 
