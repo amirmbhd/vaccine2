@@ -202,31 +202,20 @@ if age > 0:
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
                 
                 st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-                
-                # Fetch vaccines that are not taken or are in progress
-                # ...
-                
-                # ... rest of your code ...
+
+                hide_table_row_index = """
+                    <style>
+                    thead tr th:first-child {display:none}
+                    tbody th {display:none}
+                    </style>
+                    """
+                # Inject CSS with Markdown
+                st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
 
-               
-                            # Fetch vaccines that are not taken or are in progress
-                            # ...                                            
-                            
-                            # ... code remains same ...
-                            hide_table_row_index = """
-                                    <style>
-                                    thead tr th:first-child {display:none}
-                                    tbody th {display:none}
-                                    </style>
-                                    """
-                            # Inject CSS with Markdown
-                            st.markdown(hide_table_row_index, unsafe_allow_html=True)
-                            
-                            # Fetch vaccines that are not taken or are in progress
-                            # ...
-                               
-       
+
+
+              
 
             if normal_schedule_check:
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
