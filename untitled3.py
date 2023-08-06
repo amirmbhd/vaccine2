@@ -29,7 +29,7 @@ years_options = list(range(120))  # 0 to 119
 
 
 st.write(
-    "**Welcome to the Vaccine Recommender Program!** This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. You can also review normal vaccine schdeule,eligibility criteria, alternative dosing based on conditions and catch up vaccinations if applicable. **Enter the information in the sidebar to get started.**"
+    "Welcome to the Vaccine Recommendation Program! This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. **Enter the information in the sidebar to get started.**"
 )
 
 
@@ -97,6 +97,7 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
+    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
     data = []
     for vaccine, info in eligible_vaccines.items():
@@ -124,8 +125,7 @@ if age > 0:
     # split the dataframe into two based on the 'Schedule' column
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
-
-
+    
     
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
@@ -143,14 +143,8 @@ if age > 0:
 
                 
     # Always Display the first table regardless of the checkbox state
-    st.markdown("**<span style='color:black'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    st.write("Check out the list of routine vaccines and other vaccines that you might qualify for based on your age below:")
 
-
-
-
-    
     #df_conditional["Status"] = "Eligibility Under Review"
 
 
@@ -206,7 +200,7 @@ if age > 0:
         
         # 3. Display the df_conditional table only once, outside the loop
         if not df_conditional.empty:
-            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule. Please check Eligibility and Ineligibility Criteria to determine your eligibility. This Table will get updated based on your responses: </span>**", unsafe_allow_html=True)
+            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
             st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
         
         # ... Rest of your code ...
