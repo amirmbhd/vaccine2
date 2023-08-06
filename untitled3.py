@@ -44,7 +44,7 @@ age_year = st.sidebar.number_input("Years:", min_value=0, max_value=120, value=0
 # Calculate the age in days
 age = (age_month * 30) + (age_year * 365)
 
-if age_year < 18:
+if age_year < 19:
     sheet = "peds"
 else:
     sheet = "adults"
