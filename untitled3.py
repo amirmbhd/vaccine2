@@ -98,7 +98,14 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
-
+    # For each vaccine with a 'Conditional' status, present radio buttons
+    eligibility_statuses = {}
+    for index, row in df_conditional.iterrows():
+        vaccine_name = row['Vaccine Name']
+        options = ["Under Review", "Eligible", "Ineligible"]
+        eligibility_status = st.sidebar.radio(vaccine_name, options)
+        eligibility_statuses[vaccine_name] = eligibility_status
+    
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
             df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Under Review"
@@ -152,13 +159,6 @@ if age > 0:
         # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
     
-    # For each vaccine with a 'Conditional' status, present radio buttons
-    eligibility_statuses = {}
-    for index, row in df_conditional.iterrows():
-        vaccine_name = row['Vaccine Name']
-        options = ["Under Review", "Eligible", "Ineligible"]
-        eligibility_status = st.sidebar.radio(vaccine_name, options)
-        eligibility_statuses[vaccine_name] = eligibility_status
     
                     
     # Always Display the first table regardless of the checkbox state
