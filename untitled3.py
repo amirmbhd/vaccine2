@@ -97,6 +97,8 @@ if age > 0:
         "", list(eligible_vaccines.keys()) + ["None"]
     )
 
+    st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
+
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Pending" if info["Schedule"] != 'Conditional' else "Eligibility Under Review"
