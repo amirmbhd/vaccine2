@@ -159,7 +159,9 @@ if age > 0:
     vaccines_not_taken = [
         vaccine for vaccine in eligible_vaccines.keys() if vaccine not in vaccine_selection or df[df['Vaccine Name'] == vaccine]['Status'].values[0] == 'In Progress'
     ]
-    
+
+    # ... (rest of your code above remains unchanged)
+
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
             st.markdown(
@@ -172,10 +174,21 @@ if age > 0:
             )
             # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
+                eligibility_info_present = False  # Flag to check if there's any eligibility or ineligibility info
                 if eligible_vaccines[vaccine]['eligibility']:
+                    eligibility_info_present = True
                     st.markdown(f"**<span style='color:green'>You are eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['eligibility']}", unsafe_allow_html=True)
                 if eligible_vaccines[vaccine]["ineligibility"]:
+                    eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
+                
+                # Add the radio button if eligibility or ineligibility info is present
+                if eligibility_info_present:
+                    user_choice = st.radio(
+                        'Based on the information above, select your eligibility:',
+                        ('Ineligible', 'Eligible')
+                    )
+    
             if normal_schedule_check:
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
             condition_dosing_data = []
