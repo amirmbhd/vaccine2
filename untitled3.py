@@ -29,9 +29,9 @@ years_options = list(range(120))  # 0 to 119
 
 
 st.write(
-    "**Welcome to the Vaccine Recommender Program!** This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. You can also review normal vaccine schdeule,eligibility criteria, alternative dosing based on conditions and catch up vaccinations if applicable. **Enter the information in the sidebar to get started.**"
+    "**Welcome to the Vaccine Recommender Program!** This program will tell you which vaccines you are eligible for based on your age. You can also enter which vaccines you have already taken, and the program will tell you if you need any more doses. You can also review normal vaccine schdeule,eligibility criteria, alternative dosing based on conditions and catch up vaccinations if applicable."
 )
-
+st.write("**Enter the information in the sidebar to get started.**")
 
 
 
