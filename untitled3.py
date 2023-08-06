@@ -140,11 +140,11 @@ if age > 0:
  
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
-            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Under Review"
+            df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Under Review"
         elif status == "Eligible":
-            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Pending"
+            df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Pending"
         elif status == "Ineligible":
-            df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
+            df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
 
     
         # At the end of the sidebar, ask the user to review eligibility criteria 
