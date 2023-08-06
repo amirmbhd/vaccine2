@@ -180,43 +180,39 @@ if age > 0:
                     eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
                 
-                                # ... earlier code ...
+         
                 
-                user_choice = ''  # Initialize user_choice
-
-                                # ... (your code above remains unchanged)
-                
-        # Display the second table (conditional schedule) if it's not empty
-        if not df_conditional.empty:
-            st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
-                    if eligibility_info_present:
-                        user_choice = st.radio(
-                            f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
-                            (' ', 'Eligible', 'Ineligible'),
-                            key=f"eligibility_radio_{vaccine}"
-                        )
-                        
-                        if user_choice == 'Eligible':
-                            df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
-                        elif user_choice == 'Ineligible':
-                            df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+                # Display the second table (conditional schedule) if it's not empty
+                if not df_conditional.empty:
+                    st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+                            if eligibility_info_present:
+                                user_choice = st.radio(
+                                    f"Based on the information above, select your eligibility for the {vaccine} vaccine:",
+                                    (' ', 'Eligible', 'Ineligible'),
+                                    key=f"eligibility_radio_{vaccine}"
+                                )
+                                
+                                if user_choice == 'Eligible':
+                                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
+                                elif user_choice == 'Ineligible':
+                                    df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
+                            
+                            st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
                     
-                    st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-            
-        
-            # ... code remains same ...
-            hide_table_row_index = """
-                    <style>
-                    thead tr th:first-child {display:none}
-                    tbody th {display:none}
-                    </style>
-                    """
-            # Inject CSS with Markdown
-            st.markdown(hide_table_row_index, unsafe_allow_html=True)
-            
-            # Fetch vaccines that are not taken or are in progress
-            # ...
-               
+                
+                            # ... code remains same ...
+                            hide_table_row_index = """
+                                    <style>
+                                    thead tr th:first-child {display:none}
+                                    tbody th {display:none}
+                                    </style>
+                                    """
+                            # Inject CSS with Markdown
+                            st.markdown(hide_table_row_index, unsafe_allow_html=True)
+                            
+                            # Fetch vaccines that are not taken or are in progress
+                            # ...
+                               
        
 
             if normal_schedule_check:
