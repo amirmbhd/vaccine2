@@ -99,25 +99,7 @@ if age > 0:
     )
 
 
-    
-    data = []
-    for vaccine, info in eligible_vaccines.items():
-        status = "Pending"
-        if vaccine in vaccine_selection:
-            doses_taken = st.sidebar.number_input(
-                        f"How many doses of {vaccine} have you taken?",
-                        min_value=1,
-                        value=1,
-                    )
-            if doses_taken > 0:
-                doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
-                if doses_needed > 0:
-                    status = 'In Progress'  # directly update status
-                else:
-                    status = 'Completed'  # directly update status
-                    st.write(df)
-        data.append([vaccine, info["doses"], status, info.get("Schedule")])
-
+ 
         # split the dataframe into two based on the 'Schedule' column
     
 
@@ -145,6 +127,24 @@ if age > 0:
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Pending"
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
+   
+    data = []
+    for vaccine, info in eligible_vaccines.items():
+        status = "Pending"
+        if vaccine in vaccine_selection:
+            doses_taken = st.sidebar.number_input(
+                        f"How many doses of {vaccine} have you taken?",
+                        min_value=1,
+                        value=1,
+                    )
+            if doses_taken > 0:
+                doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                if doses_needed > 0:
+                    status = 'In Progress'  # directly update status
+                else:
+                    status = 'Completed'  # directly update status
+                    st.write(df)
+        data.append([vaccine, info["doses"], status, info.get("Schedule")])
 
     
         # At the end of the sidebar, ask the user to review eligibility criteria 
