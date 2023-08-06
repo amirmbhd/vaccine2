@@ -199,7 +199,7 @@ if age > 0:
                     section_title = "Conditions and Alternate Dosing"
     
                 st.markdown(
-                    f"**<span style='color:#5C27E7'>{section_title} for {vaccine}:</span>**",
+                    f"**<span style='color:#51b8be'>{section_title} for {vaccine}:</span>**",
                     unsafe_allow_html=True
                 )
                 condition_dosing_df = pd.DataFrame(condition_dosing_data, columns=["Condition", "Alternate Dosing"])
