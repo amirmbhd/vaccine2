@@ -166,14 +166,6 @@ if age > 0:
     
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
-            st.markdown(
-                "**<span style='color:#254912'>The timeline for your remaining vaccines:</span>**",
-                unsafe_allow_html=True,
-            )
-            for vaccine in vaccines_not_taken:
-                st.markdown(
-                    f"**<span style='color:#5C27E7'>The normal timeline for {vaccine}:</span>**", unsafe_allow_html=True
-                )
             # Display the eligibility and ineligibility info if the corresponding checkbox is checked and data exists
             if eligibility_criteria_check:
                 if eligible_vaccines[vaccine]['eligibility']:
@@ -181,6 +173,9 @@ if age > 0:
                 if eligible_vaccines[vaccine]["ineligibility"]:
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
             if normal_schedule_check:
+                st.markdown(
+                    f"**<span style='color:#5C27E7'>The normal timeline for {vaccine}:</span>**", unsafe_allow_html=True
+                )
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
             condition_dosing_data = []
             for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
