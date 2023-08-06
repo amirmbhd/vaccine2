@@ -143,6 +143,9 @@ if age > 0:
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
     
 
+    for vaccine in df_conditional["Vaccine Name"]:
+    if vaccine in st.session_state.vaccine_status:
+        df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = st.session_state.vaccine_status[vaccine]
 
                 
     # Always Display the first table regardless of the checkbox state
@@ -199,6 +202,11 @@ if age > 0:
                         (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"
                     )
+
+                    if user_choice != ' ':
+                        st.session_state.vaccine_status[vaccine] = user_choice
+                        st.experimental_rerun()             
+                        
                     # 2. If the user provides input via the radio buttons, update the df_conditional DataFrame accordingly
                     if user_choice == 'Eligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
