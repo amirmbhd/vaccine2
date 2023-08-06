@@ -101,7 +101,14 @@ if age > 0:
 
  
         # split the dataframe into two based on the 'Schedule' column
-    
+         # For each vaccine with a 'Conditional' status, present radio buttons
+    eligibility_statuses = {}
+    for index, row in df_conditional.iterrows():
+        vaccine_name = row['Vaccine Name']
+        options = ["Under Review", "Eligible", "Ineligible"]
+        eligibility_status = st.sidebar.radio(vaccine_name, options)
+        eligibility_statuses[vaccine_name] = eligibility_status
+
     data = []
     for vaccine, info in eligible_vaccines.items():
         status = "Pending"
@@ -129,13 +136,6 @@ if age > 0:
     df_conditional = df[df['Schedule'] == 'Conditional']
     df_non_conditional = df.drop(df_conditional.index)
 
-     # For each vaccine with a 'Conditional' status, present radio buttons
-    eligibility_statuses = {}
-    for index, row in df_conditional.iterrows():
-        vaccine_name = row['Vaccine Name']
-        options = ["Under Review", "Eligible", "Ineligible"]
-        eligibility_status = st.sidebar.radio(vaccine_name, options)
-        eligibility_statuses[vaccine_name] = eligibility_status
 
  
     for vaccine, status in eligibility_statuses.items():
