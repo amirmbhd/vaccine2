@@ -84,6 +84,9 @@ for _, row in vaccine_df.iterrows():
             condition_dosing[row[condition_column]] = row[dosing_column]
     vaccines[vaccine] = {"ages": age_range, "doses": doses, "doses_info": doses_info, "timeline": timeline, "eligibility": eligibility, "ineligibility": ineligibility, "condition_dosing": condition_dosing, "Schedule": Schedule}
 
+if 'vaccine_status' not in st.session_state:
+    st.session_state.vaccine_status = {}
+
 if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
