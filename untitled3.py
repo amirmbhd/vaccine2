@@ -3,17 +3,17 @@ import pandas as pd
 from PIL import Image
 
 
-def load_images(image_name):
-    img = Image.open(image_name)
-    return st.image(img, width=670)
+#def load_images(image_name):
+   # img = Image.open(image_name)
+  #  return st.image(img, width=670)
 
 
 
 
-c_image = 'Banner.jpg'
-load_images(c_image)
+#c_image = 'Banner.jpg'
+#load_images(c_image)
 
-
+st.image('Banner.jpg')
 
 def color_rows(row):
     if row['Status'] == 'Completed':
