@@ -161,7 +161,9 @@ if age > 0:
     ]
 
     # ... (rest of your code above remains unchanged)
+    # ... (earlier parts of your code)
 
+    
     if len(vaccines_not_taken) > 0:
         if normal_schedule_check:
             st.markdown(
@@ -182,13 +184,17 @@ if age > 0:
                     eligibility_info_present = True
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
                 
-                # Add the radio button if eligibility or ineligibility info is present
+                                # ... (earlier parts of your code)
+                
                 if eligibility_info_present:
                     user_choice = st.radio(
                         'Based on the information above, select your eligibility:',
-                        ('Ineligible', 'Eligible')
+                        ('Ineligible', 'Eligible'),
+                        key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
-    
+                
+                # ... (rest of your code)
+
             if normal_schedule_check:
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
             condition_dosing_data = []
