@@ -118,13 +118,14 @@ if age > 0:
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
 
         # split the dataframe into two based on the 'Schedule' column
-    df_conditional = df[df['Schedule'] == 'Conditional']
-    df_non_conditional = df.drop(df_conditional.index)
+    
 
     # Add 'Schedule' to the DataFrame columns
     df = pd.DataFrame(data, columns=["Vaccine Name", "Total Doses", "Status", "Schedule"])
     df = df.sort_values(by="Status", ascending=False)
     df = df.reset_index(drop=True)
+    df_conditional = df[df['Schedule'] == 'Conditional']
+    df_non_conditional = df.drop(df_conditional.index)
    
         # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
