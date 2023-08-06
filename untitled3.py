@@ -138,7 +138,6 @@ if age > 0:
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:black'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
-    st.write("Check out the list of routine vaccines and other vaccines that you might qualify for based on your age below:")
 
 
     # Display the second table (conditional schedule) if it's not empty
