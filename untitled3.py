@@ -19,7 +19,7 @@ def color_rows(row):
 months_options = list(range(13))  # 0 to 12
 years_options = list(range(120))  # 0 to 119
 
-st.title("Vaccine Recommendation Program")
+
 
 
 st.markdown(
