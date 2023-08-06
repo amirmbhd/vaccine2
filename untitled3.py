@@ -188,7 +188,7 @@ if age > 0:
                 
                 if eligibility_info_present:
                     user_choice = st.radio(
-                        '**Based on the information above, select your eligibility for this vaccine:**',
+                        f"**Based on the information above, select your eligibility for this vaccine:**",
                         ('Ineligible', 'Eligible'),
                         key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
