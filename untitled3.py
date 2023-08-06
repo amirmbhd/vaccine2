@@ -136,7 +136,6 @@ if age > 0:
         options = ["Under Review", "Eligible", "Ineligible"]
         eligibility_status = st.sidebar.radio(vaccine_name, options)
         eligibility_statuses[vaccine_name] = eligibility_status
-        st.write(eligibility_statuses)
 
  
     for vaccine, status in eligibility_statuses.items():
