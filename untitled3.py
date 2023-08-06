@@ -210,15 +210,15 @@ if age > 0:
                         (' ', 'Eligible', 'Ineligible'),
                         key=f"eligibility_radio_{vaccine}"  # This makes the key unique for each vaccine
                     )
-                
+                    # Update the display of radio buttons to be in a row
+                    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+                    
                     # Update the status in the df_conditional DataFrame based on the user's choice
                     if user_choice == 'Eligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Pending"
                     elif user_choice == 'Ineligible':
                         df_conditional.loc[df_conditional["Vaccine Name"] == vaccine, "Status"] = "Ineligible"
                     
-                    # Update the display of radio buttons to be in a row
-                    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
                     
                     # ... (rest of your code)
                 
