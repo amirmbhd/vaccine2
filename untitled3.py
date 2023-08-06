@@ -145,24 +145,7 @@ if age > 0:
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'Status'] = "Ineligible"
 
-    
-                    
-
-
-    
-    # Define the checkboxes in the sidebar
-    normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
-    eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
-    
-    # Set the checkbox label based on the age
-    if age_year < 19:
-        checkbox_label = "Catch Up Dosing"
-    else:
-        checkbox_label = "Conditions and Alternate Dosing"
-    
-    conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
-    
-
+  
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:#073863'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
@@ -186,6 +169,23 @@ if age > 0:
     
     # Fetch vaccines that are not taken or are in progress
     # ...
+  
+                    
+
+
+    
+    # Define the checkboxes in the sidebar
+    normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
+    eligibility_criteria_check = st.sidebar.checkbox("Eligibility and Ineligibility Criteria")
+    
+    # Set the checkbox label based on the age
+    if age_year < 19:
+        checkbox_label = "Catch Up Dosing"
+    else:
+        checkbox_label = "Conditions and Alternate Dosing"
+    
+    conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
+    
 
     # Fetch vaccines that are not taken or are in progress
     vaccines_not_taken = [
