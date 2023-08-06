@@ -90,14 +90,6 @@ if age > 0:
     # Determine which vaccines the user is eligible for
     eligible_vaccines = {k: v for k, v in vaccines.items() if age in v["ages"]}
 
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
         
     # Define the checkboxes in the sidebar
     normal_schedule_check = st.sidebar.checkbox("Normal Vaccine schedule")
@@ -110,7 +102,16 @@ if age > 0:
         checkbox_label = "Conditions and Alternate Dosing"
     
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
+
     
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
 
     # At the end of the sidebar, ask the user to review eligibility criteria 
     st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
