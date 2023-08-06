@@ -181,6 +181,10 @@ if age > 0:
                 if eligible_vaccines[vaccine]["ineligibility"]:
                     st.markdown(f"**<span style='color:red'>You are not eligible for this vaccine if meeting any of these conditions/criteria:</span>** {eligible_vaccines[vaccine]['ineligibility']}", unsafe_allow_html=True)
             if normal_schedule_check:
+                st.markdown(
+                    f"**<span style='color:#5C27E7'>{section_title} for {vaccine}:</span>**",
+                    unsafe_allow_html=True
+                )
                 st.table(pd.DataFrame(eligible_vaccines[vaccine]["timeline"], index=["Timeline"]))
             condition_dosing_data = []
             for condition, dosing in eligible_vaccines[vaccine]["condition_dosing"].items():
