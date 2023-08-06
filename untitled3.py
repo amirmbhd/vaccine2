@@ -103,7 +103,18 @@ if age > 0:
     
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
 
-   
+    
+    # Sidebar for already taken vaccines
+    st.sidebar.markdown(
+        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
+        unsafe_allow_html=True,
+    )
+    vaccine_selection = st.sidebar.multiselect(
+        "", list(eligible_vaccines.keys()) + ["None"]
+    )
+
+    # At the end of the sidebar, ask the user to review eligibility criteria 
+    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
     
     # Prompt for radio buttons before constructing the DataFrame
     eligibility_statuses = {}
@@ -112,34 +123,37 @@ if age > 0:
             options = ["Under Review", "Eligible", "Ineligible"]
             eligibility_status = st.sidebar.radio(vaccine, options)
             eligibility_statuses[vaccine] = eligibility_status
+    
     data = []
     for vaccine, info in eligible_vaccines.items():
         # Set default status as Pending
         status = "Pending"
         
-        if vaccine in vaccine_selection:
-            doses_taken = st.sidebar.number_input(
-                f"How many doses of {vaccine} have you taken?",
-                min_value=1,
-                value=1,
-            )
-            doses_needed = vaccines[vaccine]["doses"] - doses_taken
-            if doses_needed > 0:
-                status = 'In Progress'
-            else:
-                status = 'Completed'
         # If the vaccine is conditional, get its status from the radio buttons
-        elif vaccine in eligibility_statuses:
+        if vaccine in eligibility_statuses:
             if eligibility_statuses[vaccine] == "Under Review":
                 status = "Under Review"
             elif eligibility_statuses[vaccine] == "Eligible":
                 status = "Pending"
             elif eligibility_statuses[vaccine] == "Ineligible":
                 status = "Ineligible"
-    
+        else:
+            if vaccine in vaccine_selection:
+                doses_taken = st.sidebar.number_input(
+                            f"How many doses of {vaccine} have you taken?",
+                            min_value=1,
+                            value=1,
+                        )
+                if doses_taken > 0:
+                    doses_needed = vaccines[vaccine]["doses"] - doses_taken  # Use 'vaccines' instead of 'eligible_vaccines'
+                    if doses_needed > 0:
+                        status = 'In Progress'  # directly update status
+                    else:
+                        status = 'Completed'  # directly update status
         data.append([vaccine, info["doses"], status, info.get("Schedule")])
-
- 
+    
+    # ... Rest of your code ...
+    
     
     
     
@@ -160,8 +174,7 @@ if age > 0:
     df_non_conditional = df.drop(df_conditional.index)
 
 
-    st.sidebar.markdown("**Please review eligibility criteria and select your eligibility status for the following vaccines:**")
-
+ 
     for vaccine, status in eligibility_statuses.items():
         if status == "Under Review":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Under Review"
@@ -169,19 +182,10 @@ if age > 0:
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Pending"
         elif status == "Ineligible":
             df.loc[df['Vaccine Name'] == vaccine, 'status'] = "Ineligible"
-    
-    # Sidebar for already taken vaccines
-    st.sidebar.markdown(
-        "**<span style='color:black'>Please select the vaccines you have already taken (You can select multiple):</span>**",
-        unsafe_allow_html=True,
-    )
-    vaccine_selection = st.sidebar.multiselect(
-        "", list(eligible_vaccines.keys()) + ["None"]
-    )
-
-
-    
    
+
+       
+  
     # Always Display the first table regardless of the checkbox state
     st.markdown("**<span style='color:#073863'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
@@ -207,6 +211,7 @@ if age > 0:
     # ...
   
                     
+
 
 
     # Fetch vaccines that are not taken or are in progress
