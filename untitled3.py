@@ -133,16 +133,16 @@ if age > 0:
     conditions_dosing_check = st.sidebar.checkbox(checkbox_label)
     
 
-
+    
                 
     # Always Display the first table regardless of the checkbox state
-    st.markdown("**<span style='color:black'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
+    st.markdown("**<span style='color:#073863'>The following vaccines are the routine vaccines you are eligible for: </span>**", unsafe_allow_html=True)
     st.table(df_non_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
 
 
     # Display the second table (conditional schedule) if it's not empty
     if not df_conditional.empty:
-        st.markdown("**<span style='color:black'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
+        st.markdown("**<span style='color:#073863'>The following vaccines have a 'Conditional' Schedule (Please check Eligibility and Ineligibility Criteria to determine your eligibility): </span>**", unsafe_allow_html=True)
         st.table(df_conditional.style.apply(color_rows, axis=1).set_properties(**{'text-align': 'center'}))
         
 
